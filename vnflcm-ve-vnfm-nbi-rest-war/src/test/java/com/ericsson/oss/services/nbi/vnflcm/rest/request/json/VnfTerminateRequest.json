@@ -1,0 +1,8 @@
+{
+    "terminationType" : "FORCEFUL",          
+    "additionalParam": {
+          "vm1": "1a9a13cb-bade-11e6-ac94-603320524111",
+          "vm2": "1a9a13cb-bade-11e6-ac94-603320524555",
+          "isBackwardCompatible": false
+     }      
+}

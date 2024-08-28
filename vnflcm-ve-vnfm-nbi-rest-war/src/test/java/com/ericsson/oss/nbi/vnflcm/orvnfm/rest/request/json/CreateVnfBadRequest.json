@@ -1,0 +1,10 @@
+{
+    "vnfdId":"abc_32",
+    "additionalParams":{
+        "hotPackageName":"",
+        "vnfSoftwareVersion":"abc",
+        "vnfProductName":"abc",
+        "onboardedVnfPkgInfoId":"abc",
+        "vnfdVersion":"abc"
+    }
+}

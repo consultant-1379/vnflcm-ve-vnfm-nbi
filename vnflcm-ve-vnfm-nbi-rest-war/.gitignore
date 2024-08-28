@@ -1,0 +1,6 @@
+# Eclipse files
+.settings
+.project
+.classpath
+.pmd
+target

@@ -1,0 +1,2033 @@
+#%RAML 1.0 Library
+---
+
+types:
+
+  ###############
+  # Common:
+  ###############
+
+  VnfInstanceId:
+    usage: Identifier of the VNF instance.
+    type: string
+
+  Version:
+    usage: Version for a resource or a structure or a property
+    type: string
+
+  VnfInstanceName:
+    usage: Human-readable name of the VNF instance to be created.
+    type: string
+
+  vnfSoftwareVersion:
+    usage: Software version of the VNF.The value is copied from the VNFD.
+    type: string
+
+  VnfInstanceDescription:
+    usage: Human-readable description of the VNF instance to be created.
+    type: string
+
+  VnfdId:
+    usage: This should be of the format <<VnfType>__<<VnfVersion>>. For e.g., mme__16B
+    type: string
+
+  VduId:
+    usage:
+    type: string
+
+  ResourceTemplateId:
+    usage:
+    type: string
+
+  VimConnectionId:
+    usage: Reference to the identifier of the "VimInfo" structure.
+    type: string
+
+  ResourceProviderId:
+    usage: Identifies the entity responsible for the management of this resource
+    type: string
+
+  VnfProvider:
+    usage: Provider of the VNF
+    type: string
+
+  VnfProductName:
+    usage: Name of the VNF Product
+    type: string
+
+  InstantiationState:
+    usage: Instantiation state of the VNF
+    enum: [ "INSTANTIATED", "NOT_INSTANTIATED" ]
+
+  ResourceType:
+    usage:
+    enum: [ "COMPUTE", "LINKPORT","STORAGE","VL" ]
+
+  LcmOperationType:
+    usage:
+    enum: [ "INSTANTIATE", "TERMINATE","UPDATE(Not supported)","SCALE(Not supported)" ]
+
+  OperationStatus:
+    usage: Instantiation state of the VNF
+    enum: [ "SUCCESS", "FAILED", "PROCESSING", "CANCELLED" ]
+
+  UserInitDataType:
+    usage: Type of data being passed under initData
+    enum: [ "URI"]
+
+  AffinityOrAntiAffinity:
+    usage: The type of the constraint.
+    enum: [ "AFFINITY", "ANTI_AFFINITY" ]
+
+  PlacementConstraintScope:
+    usage: The scope of the placement constraint indicating the category of the "place" where the constraint applies.
+    enum: [ "NFVI_POP", "ZONE","ZONE_GROUP","NFVI_NODE" ]
+
+  ConstraintResourceRefType:
+    usage:  This type references a resource either by its VIM-level identifier for existing resources, or by the identifier of a "ResourceDefinition" structure in the "GrantRequest" structure for new resources.
+    enum: [ "GRANT","RES_MGMT" ]
+
+  VnfOperationalStateType:
+     usage: VNF instance states.
+     enum: [ "ADMIN_LOCKED", "ADMIN_UNLOCKED", "STARTED(Not supported)" , "STOPPED(Not supported)" ]
+
+  StopType:
+     usage: It signals whether forceful or graceful stop is requested.
+     enum: [ "FORCEFUL" ]
+
+  LayerProtocol:
+     usage: The identifier of layer(s) and protocol(s) associated to the network address information
+     enum: [ "IP_OVER_ETHERNET" ]
+
+  ConstraintResourceRef:
+    usage:  This type references a resource either by its VIM-level identifier for existing resources, or by the identifier of a "ResourceDefinition" structure in the "GrantRequest" structure for new resources.
+    properties:
+      idType:
+        description: The type of the identifier. RES_MGMT: Resource-management-level identifier; this identifier is managed by the VIM in the direct mode of VNF-related resource management, and is managed by the NFVO in the indirect mode),GRANT: Reference to the identifier of a "ResourceDefinition" structure in the "GrantRequest" structure.
+        type: ConstraintResourceRefType
+        required: true
+      resourceId:
+        description: An actual resource-management-level identifier (idType=RES_MGMT), or an identifier that references a "ResourceDefinition" structure in the related "GrantRequest" structure (idType=GRANT).
+        type: IdentifierInVim
+        required: true
+      vimConnectionId:
+        description: Identifier of the VIM connection for managing the resource. It shall only be present when idType = RES_MGMT.The applicable "VimConnectionInfo" structure, which is referenced by vimConnectionId, can be obtained from the "vimConnectionInfo" attribute of the "VnfInstance" structure.supported only in direct mode.
+        type: Identifier
+        required: true
+      resourceProviderId:
+        description: Identifier of the resource provider. It shall only be present when idType = RES_MGMT.This attribute shall only be supported when VNF-related resource management in indirect mode is applicable
+        type: Identifier
+        required: true
+
+  UserInitDataInfo:
+    usage: Data to be passed in a cloud-init.
+    properties:
+      vnfcName:
+        type: VnfcName
+        required: true
+      initDataType:
+        description: Currently, only "URI" type is supported.
+        type: UserInitDataType
+        required: true
+      initData:
+        description: Currently, only an "http" link is supported.
+        type: string
+        required: true
+
+  FlavourId:
+    usage: Identifier of the VNF DF applied to this VNF instance.
+    type: string
+
+  VimId:
+    usage: The identifier of the VIM.
+    type: string
+
+  TerminationType:
+    usage: Signals whether forceful or graceful termination is requested.
+    required: false
+    enum: [ "GRACEFUL", "FORCEFUL" ]
+
+
+
+  VimType:
+    usage: The vim type to be
+    required: false
+    enum: [ "CEE", "OPENSTACK" ]
+
+
+  TimeDuration:
+    usage: Time duration in seconds
+    required: false
+    type: number
+
+  LifecycleOperationOccurrenceId:
+    usage: The identifier of the VNF lifecycle operation occurrence.
+    type: string
+
+  TenantId:
+    usage: The identifier of a tenant in VIM.
+    type: string
+
+  RegionId:
+    usage: The identifier of a region in VIM.
+    type: string
+
+  ZoneId:
+    usage: The identifier of a zone in VIM.
+    required: false
+    type: string
+
+  ZoneName:
+    usage: The name of a zone in VIM.
+    type: string
+
+  ZoneInfoId:
+    usage: The identifier of this ZoneInfo instance, for the purpose of referencing it from other information elements. The value of this can work as the name of the respective parameter in the HEAT template.
+    type: string
+
+  HostId:
+    usage: The identifier of a host in VIM.
+    required: false
+    type: string
+
+  AuthUrl:
+    usage: The authentication url.
+    type: string
+
+  VnfdSoftwareImageId:
+    usage: Identifier of the software image descriptor in the VNFD.
+    required: true
+    type: string
+
+  VimSoftwareImageId:
+    usage: Identifier of the software image in the resource management layer (i.e. VIM).
+    required: true
+    type: string
+
+  VimSoftwareImageName:
+    usage: Name of the software image in the resource management layer (i.e. VIM).
+    required: true
+    type: string
+
+  VnfdVirtualComputeDescId:
+    usage: Identifier which references the VirtualComputeDesc in the VNFD that maps to this flavour.The value of this can work as the name of the respective parameter in the HEAT template.
+    required: true
+    type: string
+
+  VimFlavourId:
+    usage: Identifier of the compute resource flavour in the resource management layer (i.e. VIM).
+    required: true
+    type: string
+
+  ExtVirtualLinkId:
+    required: false
+    usage: Identifier of this external VL instance
+    type: string
+
+  LinkResourceId:
+    usage: Identifier of the Virtual Link resource in the scope of the VIM or the resource provider
+    type: string
+
+  VirtualLinkName:
+    usage: Name of the external VL instance
+    type: string
+
+  AddrId:
+    usage: Version of address.
+    type: string
+
+  InterfaceName:
+    usage: Interface Name.
+    type: string
+
+  Cidr:
+   usage: CIDR value (IP range or IP block) for the subnet to be created. This value is used when subnet is created during the orchestration.
+   type: string
+
+  VnfcName:
+    usage: Name of the VNFC of the VNF, should match the name in the VNFD.
+    type: string
+
+  VnfcInstance:
+    usage: Instance Index of the VNFC, this identifies the specific instance of the VNFC when multiple instances of the VNFC are part of the VNF deployment flavor.
+    type: string
+
+  Subnet:
+    usage: Subnet Identifier. This value is used when subnet is pre configured.
+    type: string
+
+  Addr:
+    usage: IP Address.
+    type: string
+
+  VnfcInstanceId:
+    usage: Identifier of VNFC instances
+    type: string
+
+    HealScript:
+    usage: set of rules for healing procedure
+    type: string
+    
+    
+  CreateVnfRequest:
+    usage: Request parameters for the "Create VNF identifier" operation.
+    required: true
+    properties:
+      vnfdId:
+        description: Identifier that identifies the VNFD which defines the VNF instance to be created.
+        type: VnfdId
+        required: true
+      vnfInstanceName:
+        description: Human-readable name of the VNF instance to be created
+        type: VnfInstanceName
+        required: false
+      vnfInstanceDescription:
+        description: Human-readable name of the VNF instance to be created
+        type: VnfInstanceDescription
+        required: false
+      additionalParams:
+        description: Additional params for create VNF instance.
+        type: CreateVNFAdditionalParam
+        required: false
+
+  InstantiateVNFRequest:
+    usage: The request parameters required by Instantiate VNF Operation.
+    properties:
+      flavourId:
+        description: Identifier of the VNF DF to be instantiated.
+        required: true
+        type: IdentifierInVnfd
+      instantiationLevelId:
+        description: Identifier of the instantiation level of the deployment flavour to be instantiated. If not present, the default instantiation level as declared in the VNFD is instantiated.
+        required: false
+        type: IdentifierInVnfd
+      extVirtualLinks:
+        description: Information about external VLs to connect the VNF to.
+        required: false
+        type: ExtVirtualLinkData[]
+      vimConnectionInfo:
+        description: Information about VIM connections to be used for managing the resources for the VNF instance, or refer to external / externally-managed virtual links.
+        required: false
+        type: VimConnectionInfo[]
+      additionalParams:
+        description: Additional parameters passed by the NFVO as input to the instantiation process, specific to the VNF being instantiated. See VNF specific examples for the exact list of parameters required for the VNF (e.g. MME)
+        required: false
+        type: AdditionalParam
+      extManagedVirtualLinks:
+        description: Information about internal VLs that are managed by the NFVO.
+        required: false
+        type: ExtManagedVirtualLinkData[]
+      localizationLanguage:
+        description: Localization language of the VNF to be instantiated.
+        required: false
+        type: string
+
+  ExtManagedVirtualLinkData:
+    usage: Information about internal VLs that are managed by the NFVO.
+    properties:
+      id:
+        description: The identifier of the external VL instance.
+        type: Identifier
+        required: true
+      virtualLinkDescId:
+        description: The identifier of the VLD in the VNFD for this VL.
+        type: IdentifierInVnfd
+        required: true
+      vimConnectionId:
+        description: Identifier of the VIM connection to manage this resource. This attribute shall only be supported and present if VNF-related resource management in direct mode is applicable. 
+        type: Identifier
+        required: false
+      resourceProviderId:
+        description: Identifies the entity responsible for the management of this resource. This attribute shall only be supported and present if VNF-related resource management in indirect mode is applicable. The identification scheme is outside the scope of the present document.
+        type: Identifier
+        required: false
+      resourceId:
+        description: Identifier of the resource in the scope of the VIM or the resource provider
+        type: IdentifierInVim
+        required: true
+
+  ScaleVnfRequest:
+    usage: The request parameters required for Scale VNF Operation.
+    properties:
+      type:
+        description: The type of the scale operation requested.
+        required: true
+        enum: [ "SCALE_OUT", "SCALE_IN" ]
+      aspectId:
+        description: Identifier of the scaling aspect.
+        required: true
+        type: IdentifierInVnfd
+      numberOfSteps:
+        description: Number of scaling steps to be executed as part of this Scale VNF operation. It shall be a positive number and the default value shall be 1.
+        required: false
+        type: integer
+      additionalParams:
+        description: Additional parameters passed by the NFVO as input to the scaling process, specific to the VNF being scaled.
+        required: false
+        type: AdditionalParam
+
+  OperateVnfRequest:
+    usage: The request parameters required for Operate VNF operation.
+    properties:
+      changeStateTo:
+        description: The desired state to change the VNF to.
+        required: true
+        type: VnfOperationalStateType
+      stopType:
+        description: It signals whether forceful or graceful stop is requested. Ignored if changeStateTo=STARTED. This parameter is not supported currently.
+        required: false
+        type: StopType
+      additionalParams:
+        description: Additional parameters passed by the NFVO as input to the process, specific to the VNF of which the operation status is changed, as declared in the VNFD as part of "OperateVnfOpConfig".
+        required: false
+        type: KeyValuePairs
+
+  HealVnfRequest:
+    usage: The request parameters required for Heal VNF Operation.
+    properties:
+      cause:
+        description: Indicates the reason why a healing procedure is required.
+        required: false
+        type: string
+      additionalParams:
+        description: Additional parameters passed by the NFVO as input to the healing process, specific to the VNF being healed.
+        required: false
+        type: KeyValuePairs
+      healScript:
+        description: Provides link to a script that should be executed as part of the healing action or a set of rules for healing procedure
+        required: false
+        type: string
+
+  VnfInstance:
+    usage: This type represents a VNF instance, the information element provides run-time information about a VNF instance.
+    properties:
+      id:
+        description: Identifier of the VNF instance.
+        type: Identifier
+        required: true
+      vnfInstanceName:
+        description: Human-readable name of the VNF instance.
+        type: string
+        required: false
+      vnfInstanceDescription:
+        description: Human-readable description of the VNF instance
+        type: string
+        required: false
+      vnfdId:
+        description: Identifier of the VNFD on which the VNF instance is based.
+        type: Identifier
+        required: true
+      vnfProvider:
+        description: Provider of the VNF and the VNFD.
+        type: string
+        required: true
+        default: "Ericsson"
+      vnfProductName:
+        description: Name to identify the VNF Product.
+        type: string
+        required: true
+      vnfSoftwareVersion:
+        description: Software version of the VNF.
+        type: Version
+        required: true
+      vnfdVersion:
+        description: Identifies the version of the VNFD.
+        type: string
+        required: true
+      vnfPkgId:
+        description: Identifier of information held by the NFVO about the specific VNF package on which the VNF is based.
+        type: Identifier
+        required: true
+      vnfConfigurableProperties:
+        description: Current values of the configurable properties of the VNF instance.
+        type: string
+        required: false
+      instantiationState:
+        description: The instantiation state of the VNF.
+        type: InstantiationState
+        required: true
+      instantiatedVnfInfo:
+        description: Information specific to an instantiated VNF instance.This attribute shall be present if the instantiateState attribute value is INSTANTIATED. extManagedVirtualLinkInfo, monitoringParameters and localizationLanguage are not supported currently, so these parameters are not part of response.
+        type: InstantiatedVnfInfo
+        required: false
+      metadata:
+        description: Additional VNF-specific metadata describing the VNF instance.
+        required: false
+        type: string
+      extensions:
+        description: VNF-specific attributes attributes that affect the lifecycle management of this VNF instance by the VNFM, or the lifecycle management scripts.
+        required: false
+        type: string
+      _links:
+        description: Links to resources related to this resource
+        required: true
+        properties:
+          self:
+            description: URI of this resource
+            required: true
+            type: Link
+          indicators:
+            description: Indicators related to this VNF instance, if applicable
+            required: false
+            type: Link
+          instantiate:
+            description: Link to the "instantiate" task resource, if the related operation is possible based on the current status of this VNF instance resource.
+            required: false
+            type: Link
+          terminate:
+            description: Link to the "terminate" task resource, if the related operation is possible based on the current status of this VNF instance resource.
+            required: false
+            type: Link
+          scale:
+            description: Link to the "scale" task resource, if the related operation is supported for this VNF instance, and is possible based on the current status of this VNF instance resource.
+            required: false
+            type: Link
+          scaleToLevel:
+            description: Link to the "scale_to_level" task resource, if the related operation is supported for this VNF instance, and is possible based on the current status of this VNF instance resource. 
+            required: false
+            type: Link
+          changeFlavour:
+            description: Link to the "change_flavour" task resource, if the related operation is supported for this VNF instance, and is possible based on the current status of this VNF instance resource.
+            required: false
+            type: Link
+          heal:
+            description: Link to the "heal" task resource, if the related operation is supported for this VNF instance, and is possible based on the current status of this VNF instance resource.
+            required: false
+            type: Link
+          operate:
+            description: Link to the "operate" task resource, if the related operation is supported for this VNF instance, and is possible based on the current status of this VNF instance resource.
+            required: false
+            type: Link
+          changeExtConn:
+            description: Link to the "change_ext_conn" task resource, if the related operation is possible based on the current status of this VNF instance resource.
+            required: false
+            type: Link
+
+  ExtVirtualLinkData:
+    usage: This information element represents an external VL.
+    properties:
+      id:
+        description: The identifier of the external VL instance.
+        type: Identifier
+        required: true
+      vimConnectionId:
+        description: Identifier of the VIM connection to manage this resource.
+        type: Identifier
+        required: false
+      resourceId:
+        description: Identifier of the resource in the scope of the VIM or the resource provider
+        type: IdentifierInVim
+        required: true
+      extCps:
+        description: CPs of the VNF to be connected to this external VL.
+        type: VnfExtCpData[]
+        required: false
+      extLinkPorts:
+        description: Externally provided link ports to be used to connect external connection points to this external VL. If this attribute is not present, the VNFM shall create the link ports on the external VL.
+        type: ExtLinkPortData[]
+        required: false
+
+  VnfExtCpData:
+    usage: This information element provides input information related to an external CP.
+    properties:
+      cpdId:
+        type: string
+        required: true
+      cpConfig:
+        description: List of instance data that need to be configured on the CP instances created from the respective CPD.
+        type: VnfExtCpConfig[]
+        required: true
+
+  CpAddress:
+    usage: This information element provides input information related to an CP address.
+    properties:
+      id:
+        description: Identifier of the address.
+        type: AddrId
+        required: true
+      name:
+        description: Name of the address.
+        type: InterfaceName
+        required: false
+      cidr:
+        description: CIDR value (IP range or IP block) for the subnet to be created.
+        type: Cidr
+        required: false
+      vnfcName:
+        description: Name of the VNFC from which the CP connects to the extVirtualLink.
+        type: VnfcName
+        required: false
+      vnfcInstance:
+        description: Instance Index of the VNFC from which the CP connects to the extVirtualLink.
+        type: VnfcInstance
+        required: false
+      subnet:
+        description: Identifier of the subnet to which the CP has to connect in the extVirtualLink.
+        type: Subnet
+        required: false
+      addr:
+        description: An Address to be assigned to the CP, typically an IP address.The value should be provided in case the dynamic IP address is not assigned to the port.
+        type: Addr
+        required: false
+
+  InstantiatedVnfInfo:
+    usage: This information element provides run-time information specific to an instantiated VNF instance.
+    properties:
+      flavourId:
+        description: Identifier of the VNF deployment flavour applied to this VNF instance.
+        required: true
+        type: IdentifierInVnfd
+      vnfState:
+        description: State of the VNF instance.
+        required: true
+        type: VnfOperationalStateType
+      scaleStatus:
+        description: Scale status of the VNF, one entry per aspect. Represents for every scaling aspect how "big" the VNF has been scaled w.r.t. that aspect.
+        required: false
+        type: ScaleInfo[]
+      extCpInfo:
+        description: Information about the external CPs exposed by the VNF instance.
+        required: false
+        type: ExtCpInfo[]
+      extVirtualLinkInfo:
+        description: Information about the external VLs the VNF instance is connected to.
+        required: false
+        type: ExtVirtualLinkInfo[]
+      extManagedVirtualLinkInfo:
+        description : Information about an externally-managed virtual link.
+        required: false
+        type: ExtManagedVirtualLinkInfo[]
+      vnfcResourceInfo:
+        description: Information about the virtualised compute and storage resources used by the VNFCs of the VNF instance.
+        required: false
+        type: VnfcResourceInfo[]
+      vnfVirtualLinkResourceInfo:
+        description: Information about the virtualised network resources used by the VLs of the VNF instance.
+        required: false
+        type: VnfVirtualLinkResourceInfo[]
+      virtualStorageResourceInfo:
+        description: Information about the virtualised storage resources used as storage for the VNF instance.
+        required: false
+        type: VirtualStorageResourceInfo[]
+
+
+  IdentifierInVnfd:
+    usage: An identifier that is unique within a VNF descriptor. Representation string of variable length.
+    type: string
+  VnfOperationalStateType:
+    usage: Signals whether VNF instance is up and running or shutdown.
+    required: true
+    enum: [ "STARTED", "STOPPED", "ADMIN_LOCKED", "ADMIN_UNLOCKED"]
+  ScaleInfo:
+    usage: This type represents the scale level of a VNF instance related to a scaling aspect.
+    required: false
+    properties:
+      aspectId:
+        description: Identifier of the scaling aspect.
+        required: true
+        type: IdentifierInVnfd
+      scaleLevel:
+        description: Indicates the scale level. The minimum value shall be 0 and the maximum value shall be <= maxScaleLevel as described in the VNFD.
+        required: true
+        type: integer
+  ExtCpInfo:
+    usage: Information about the external CPs exposed by the VNF instance.
+    required: true
+    properties:
+      id:
+        description: Identifier of the external CP instance and the related information instance.
+        required: true
+        type: IdentifierInVnfd
+      cpdId:
+        description: Identifier of the external CPD, VnfExtCpd, in the VNFD.
+        required: true
+        type: IdentifierInVnfd
+      cpProtocolInfo:
+        description: Network protocol information for this CP.
+        required: false
+        type: CpProtocolInfo[]
+      extLinkPortId:
+        description: Identifier of the extLinkPortInfo structure inside the extVirtualLinkInfo structure. Shall be present if the CP is associated to a link port.
+        type: Identifier
+        required: false
+  CpProtocolInfo:
+    description: Network protocol information for this CP.
+    required: false
+    properties:
+      layerProtocol:
+        description: The identifier of layer(s) and protocol(s) associated to the network address information.
+        required: true
+        enum: [ "IP_OVER_ETHERNET" ]
+      ipOverEthernet:
+        description: IP addresses over Ethernet to assign to the extCP instance. Shall be present if layerProtocol is equal to " IP_OVER_ETHERNET", and shall be absent otherwise
+        required: false
+        type: IpOverEthernetAddressInfo
+  IpOverEthernetAddressInfo:
+    usage: IP addresses over Ethernet to assign to the extCP instance. Shall be present if layerProtocol is equal to " IP_OVER_ETHERNET", and shall be absent otherwise.
+    required: false
+    properties:
+      macAddress:
+        type: MacAddress
+        required: true
+      ipAddresses:
+        description: Addresses assigned to the CP instance. Each entry represents IP addresses assigned by fixed or dynamic IP address assignment per subnet.
+        type: IpAddressesInfo[]
+        required: false
+  NetworkAddressInfo:
+    usage: This type represents information about a network address that has been assigned.
+    required: false
+    properties:
+      macAddress:
+        description: Assigned MAC address.
+        required: true
+        type: MacAddress
+      ipAddress:
+        description: IP address. Present if an IP address was assigned.
+        required: false
+        type: IpAddress
+      subnetIpRanges:
+        description: IP address ranges defining the subnet in which the IP address was assigned.
+        required: false
+        type: SubnetIpRanges
+  MacAddress:
+    usage: A MAC address. Representation string that consists of groups of two hexadecimal digits, separated by hyphens or colons.
+    required: true
+    type: string
+  IpAddress:
+    usage: An IPV4 or IPV6 address. Representation In case of an IPV4 address, string that consists of four decimal integers separated by dots, each integer ranging from 0 to 255. In case of an IPV6 address, string that consists of groups of zero to four hexadecimal digits, separated by colons.
+    required: false
+    type: string
+  SubnetIpRanges:
+    usage: IP address ranges defining the subnet in which the IP address was assigned.
+    required: false
+    properties:
+      minIpAddress:
+        description: Lowest IP address belonging to the range.
+        required: true
+        type: string
+      maxIpAddress:
+        description: Highest IP address belonging to the range.
+        required: false
+        type: string
+  ExtVirtualLinkInfo:
+    usage: This type represents information about an external VL.
+    required: false
+    properties:
+      id:
+        description: Identifier of the external VL and the related external VL information instance.
+        required: true
+        type: Identifier
+      resourceHandle:
+        description: Reference to the resource realizing this VL.
+        required: true
+        type: ResourceHandle
+      extLinkPorts:
+        description: Link ports of this VL.
+        required: false
+        type: ExtLinkPortInfo[]
+  Identifier:
+    usage: An identifier that is unique within a VNF descriptor. Representation string of variable length.
+    required: true
+    type: string
+  ResourceHandle:
+    usage: This type represents the information that allows addressing a virtualised resource that is used by a VNF instance.
+    required: true
+    properties:
+      vimConnectionId:
+        description: Identifier of the VIM connection to manage the resource.
+        required: false
+        type: Identifier
+      resourceProviderId:
+        description: Identifier of the entity responsible for the management of the resource. (Not supported)
+        required: false
+        type: Identifier
+      resourceId:
+        description: Identifier of the resource in the scope of the VIM or the resource provider.
+        required: true
+        type: IdentifierInVim
+      vimLevelResourceType:
+        description: Type of the resource in the scope of the VIM or the resource provider.
+        required: false
+        type: string
+  IdentifierInVim:
+    usage: An identifier maintained by the VIM or other resource provider. It is expected to be unique within the VIM instance. Representation string of variable length.
+    required: true
+    type: string
+  ExtLinkPortInfo:
+    usage: This type represents a link port of an external VL, i.e., a port providing connectivity for the VNF to an NS VL.
+    required: false
+    properties:
+      id:
+        description: Identifier of this link port as provided by the entity that has created the link port.
+        required: true
+        type: Identifier
+      resourceHandle:
+        description: Reference to the virtualised network resource realizing this link port.
+        required: true
+        type: ResourceHandle
+      cpInstanceId:
+        description: Identifier of the external CP of the VNF to be connected to this link port.
+        required: false
+        type: IdentifierInVnf
+  IdentifierInVnf:
+    usage: An identifier that is unique for the respective type within a VNF instance, but that need not be globally unique. Representation string of variable length.
+    required: false
+    type: string
+  ExtManagedVirtualLinkInfo:
+    usage: This type provides information about an externally-managed virtual link.
+    required: false
+    properties:
+      id:
+        description: Identifier of the externally-managed internal VL and the related externally-managed VL information instance.
+        required: true
+        type: Identifier
+      vnfVirtualLinkDescId:
+        description: Identifier of the VNF Virtual Link Descriptor (VLD) in the VNFD.
+        required: true
+        type: IdentifierInVnfd
+      networkResource:
+        description: Reference to the VirtualNetwork resource.
+        required: true
+        type: ResourceHandle
+      vnfLinkPorts:
+        description: Link ports of this VL.
+        required: false
+        type: VnfLinkPort
+  VnfLinkPort:
+    usage: This type represents a link port of an internal VL of a VNF.
+    required: false
+    properties:
+      id:
+        description: Identifier of this link port as provided by the entity that has created the link port.
+        required: true
+        type: Identifier
+      resourceHandle:
+        description: Reference to the virtualised network resource realizing this link port.
+        required: true
+        type: ResourceHandle
+      cpInstanceId:
+        description: Identifier of the external CP of the VNF to be connected to this link port.
+        required: false
+        type: IdentifierInVnf
+  VnfcResourceInfo:
+    usage: This type represents the information on virtualised compute and storage resources used by a VNFC in a VNF instance.
+    required: false
+    properties:
+      id:
+        description: Identifier of this VnfcResourceInfo instance.
+        required: true
+        type: IdentifierInVnf
+      vduId:
+        description: Reference to the applicable VDU in the VNFD.
+        required: true
+        type: IdentifierInVnfd
+      computeResource:
+        description: Reference to the VirtualCompute resource.
+        required: true
+        type: ResourceHandle
+      storageResourceIds:
+        description: References to the VirtualStorage resources.
+        required: false
+        type: IdentifierInVnf
+      reservationId:
+        description: The reservation identifier applicable to the resource.
+        required: false
+        type: Identifier
+      vnfcCpInfo:
+        description: CPs of the VNFC instance.
+        required: false
+        type: VnfcCpInfo[]
+      metadata:
+        description: Metadata about this resource.
+        required: false
+        type: KeyValuePairs
+  VnfcCpInfo:
+    usage: This type represents the information on CPs of the VNFC instance.
+    required: false
+    properties:
+      id:
+        description: Identifier of this VNFC CP instance and the associated array entry.
+        required: true
+        type: IdentifierInVnf
+      cpdId:
+        description: Identifier of the VDU CPD, cpdId, in the VNFD.
+        required: true
+        type: IdentifierInVnfd
+      vnfExtCpId:
+        description: When the VNFC CP is exposed as external CP of the VNF, the identifier of this external VNF CP.
+        required: false
+        type: IdentifierInVnf
+      addresses:
+        description: List of network addresses that have been configured (statically or dynamically) on the CP.
+        required: false
+        type: NetworkAddressInfo
+  KeyValuePairs:
+    usage: This type represents a list of key-value pairs.
+    required: false
+    type: object
+  VnfVirtualLinkResourceInfo:
+    usage: This type represents the information that allows addressing a virtualised resource that is used by an internal VL instance in a VNF instance.
+    required: false
+    properties:
+      id:
+        description: Identifier of this VnfVirtualLinkResourceInfo instance.
+        required: true
+        type: IdentifierInVnf
+      virtualLinkDescId:
+        description: Identifier of the VNF Virtual Link Descriptor (VLD) in the VNFD.
+        required: true
+        type: IdentifierInVnfd
+      networkResource:
+        description: Reference to the VirtualNetwork resource.
+        required: true
+        type: ResourceHandle
+      reservationId:
+        description: The reservation identifier applicable to the resource.
+        required: false
+        type: Identifier
+      vnfLinkPorts:
+        description: Links ports of this VL.
+        required: true
+        type: VnfLinkPort[]
+      metadata:
+        description: Metadata about this resource.
+        required: false
+        type: KeyValuePairs
+  VirtualStorageResourceInfo:
+    usage: This type represents the information that allows addressing a virtualised resource that is used by a VNF instance.
+    required: false
+    properties:
+      id:
+        description: Identifier of this VirtualStorageResourceInfo instance.
+        required: true
+        type: IdentifierInVnf
+      virtualStorageDescId:
+        description: Identifier of the VirtualStorageDesc in the VNFD.
+        required: true
+        type: IdentifierInVnfd
+      storageResource:
+        description: Reference to the VirtualStorage resource.
+        required: true
+        type: ResourceHandle
+      reservationId:
+        description: The reservation identifier applicable to the resource.
+        required: false
+        type: Identifier
+      metadata:
+        description: Metadata about this resource.
+        required: false
+        type: KeyValuePairs
+  Link:
+    usage: This type represents a link to a resource.
+    required: false
+    properties:
+      href:
+        description: URI of the referenced resource
+        required: true
+        type: Uri
+  Uri:
+    usage: String formatted according to IETF RFC 3986 [5].
+    required: true
+    type: string
+
+  LifecycleChangeNotificationsFilter:
+    usage: This type represents a subscription filter related to notifications about VNF lifecycle changes.
+    required: false
+    properties:
+      vnfInstanceSubscriptionFilter:
+        description: Filter criteria to select VNF instances about which to notify.
+        required: false
+        type: VnfInstanceSubscriptionFilter
+      notificationTypes:
+        description: Match particular notification types.
+        required: false
+        type: string
+        enum: [ "VnfLcmOperationOccurrenceNotification", "VnfIdentifierCreationNotification", "VnfIdentifierDeletionNotification" ]
+      operationTypes:
+        description: Match particular VNF lifecycle operation types for the notification of type VnfLcmOperationOccurrenceNotification.
+        required: false
+        type: LcmOperationType
+      operationStates:
+        description: Match particular LCM operation state values as reported in notifications of type VnfLcmOperationOccurrenceNotification.
+        required: false
+        type: LcmOperationStateType
+
+  VnfInstanceSubscriptionFilter:
+    usage: This type represents subscription filter criteria to match VNF instances.
+    required: false
+    properties:
+      vnfdIds:
+        description: Filter criteria to select VNF instances about which to notify.
+        required: false
+        type: VnfdId[]
+      notificationTypes:
+        description: Match particular notification types.
+        required: false
+        type: string
+        enum: [ "VnfLcmOperationOccurrenceNotification", "VnfIdentifierCreationNotification", "VnfIdentifierDeletionNotification" ]
+      operationTypes:
+        description: Match particular VNF lifecycle operation types for the notification of type VnfLcmOperationOccurrenceNotification.
+        required: false
+        type: LcmOperationType
+      operationStates:
+        description: Match particular LCM operation state values as reported in notifications of type VnfLcmOperationOccurrenceNotification.
+        required: false
+        type: LcmOperationStateType
+
+  AdditionalParam:
+    usage: Additional parameters passed by the NFVO as input to the instantiation process, specific to the VNF being instantiated.
+    required: false
+    type: object
+
+  CreateVNFAdditionalParam:
+    usage: Additional parameters passed by the NFVO as input to the instantiation process, specific to the VNF being instantiated.
+    required: true
+    type: object
+    properties:
+      vnfPkgId:
+        description: Identifier of information held by the NFVO about the specific VNF package on which the VNF is based. If this value is not provided then vnfdid will be used as vnfPkgId.
+        type: string
+        required: false
+
+  VnfIdentifierCreationNotificationAdditionalParam:
+    usage: Additional parameters passed by VNFM to the NFVO for create VNF identifier notification
+    required: true
+    type: object
+    properties:
+      tenant:
+        description: Required only in case ECM is the NFVO.
+        type: string
+        required: false
+      vdcId:
+        description: Virtual Data Center Identification. Required only in case ECM is the NFVO.
+        type: string
+        required: false
+
+  VirtualNetworkAdditionalParam:
+    usage: Additional parameters passed by the NFVO as input to the instantiation process, specific to the network requirements of the VNF being instantiated.
+    required: false
+    type: object
+
+  ModifyVnfAdditionalParam:
+    usage: Additional parameters supported for modify VNF
+    required: false
+    type: object
+    properties:
+      vnfdId:
+        description: Identifier of the VNFD on which the VNF instance is based.
+        type: Identifier
+        required: false
+      vnfSoftwareVersion:
+        description: Software version of the VNF.
+        type: Version
+        required: false
+      vnfdVersion:
+        description: Identifies the version of the VNFD.
+        type: string
+        required: false
+
+  VnfConfigurableProperties:
+    usage: Current values of the configurable properties of the VNF instance.
+    required: false
+    type: object
+
+  InterfaceInfo:
+    usage: Information about the interface or interfaces to the VIM.
+    required: false
+    type: object
+    properties:
+      identityEndPoint:
+        description: An interface endpoint like a URL
+        type: Uri
+        required: false
+
+  AccessInfo:
+    usage: Authentication credentials for accessing the VIM, and other access-related information such as tenants or infrastructure resource groups.If vimType is one CEE or OPENSTACK, for keystone v2.0 , only projectId or projectName can be provided and for keystone v3 a combination of projectName and domainName or a combination of projectId and domainName should be provided and  if VimType is VCD then projectName is mandatory.
+    required: false
+    type: object
+    properties:
+      projectId:
+        description: The Tenant/Project identifier within the VIM.
+        type: TenantId
+        required: false
+      projectName:
+        description: The Tenant/Project name within the VIM.This is mandatory in case of vimType is VCD.
+        type: TenantId
+        required: false
+      domainName:
+        description: The domain name within the VIM.
+        type: TenantId
+        required: false
+      userDomain:
+        description: In V3 authentication this parameter can be used in the scenarios where federated access is available, and user authorization and project authorization is different.
+        type: string
+        required: false
+      credentials:
+        type: GrantVimCredentials
+        required: false
+
+  AccessInformation:
+    usage: Authentication credentials for accessing the VIM, and other access-related information such as tenants or infrastructure resource groups.If vimType is one CEE or OPENSTACK, for keystone v2.0 , only projectId or projectName can be provided and for keystone v3 a combination of projectName and domainName or a combination of projectId and domainName should be provided.
+    required: false
+    type: object
+    properties:
+      projectId:
+        description: The Tenant/Project identifier within the VIM.
+        type: TenantId
+        required: false
+      projectName:
+        description: The Tenant/Project name within the VIM.
+        type: TenantId
+        required: false
+      domainName:
+        description: The domain name within the VIM.
+        type: TenantId
+        required: false
+
+  BasicAccessInfo:
+    usage: This information element provides basic information regarding a VIM
+    properties:
+      tenantId:
+        description: The Tenant/Project identifier within the VIM.
+        type: TenantId
+        required: true
+      credentials:
+        type: VimCredentials
+        required: true
+
+  BasicInterfaceInfo:
+     usage: This information element provides basic interface endpoint information.
+     properties:
+      interfaceEndpoint:
+        description: An interface endpoint like a URL
+        type: Uri
+        required: true
+
+  LifecycleOperationResponse:
+    usage: The response returned by most of the VNF Lifecycle Operations (e.g. Terminate).
+    properties:
+      lifecycleOperationOccurrenceId:
+        type: LifecycleOperationOccurrenceId
+
+  MacAddress:
+    usage: A MAC address. Representation string that consists of groups of two hexadecimal digits, separated by hyphens or colons.
+    required: true
+    type: string
+
+  AddressRange:
+    usage: An IPV4 or IPV6 address. Representation In case of an IPV4 address, string that consists of four decimal integers separated by dots, each integer ranging from 0 to 255. In case of an IPV6 address, string that consists of groups of zero to four hexadecimal digits, separated by colons.
+    required: false
+    properties:
+      minAddress:
+        description: Lowest IP address belonging to the range.
+        required: true
+        type: IpAddress
+      maxAddress:
+        description: Highest IP address belonging to the range.
+        required: true
+        type: IpAddress
+  IdentifierInVim:
+    usage: Identifier of the resource in the scope of the VIM or the resource provider.
+    required: true
+    type: string
+  Identifier:
+    usage: An identifier representation string of variable length.
+    required: true
+    type: string
+  ExtLinkPortData:
+    properties:
+      id:
+        description: Identifier of this link port as provided by the entity that has created the link port.
+        required: true
+        type: Identifier
+      resourceHandle:
+        description: Reference to the virtualised resource realizing this link port.
+        required: true
+        type: ResourceHandle
+  VnfExtCpConfig:
+    description: This type represents an externally provided link port or network address information per instance of an external connection point. In case a link port is provided, the VNFM shall use that link port when connecting the external CP to the external VL. In a link port is not provided, the VNFM shall create a link port on the external VL, and use that link port to connect the external CP to the external VL.
+    properties:
+      cpInstanceId:
+        description: Identifier of the external CP instance to which this set of configuration parameters is requested to be applied.
+        required: false
+        type: IdentifierInVnf
+      linkPortId:
+        description: Identifier of a pre-configured link port to which the external CP will be associated.
+        required: false
+        type: Identifier
+      cpProtocolData:
+        description: Parameters for configuring the network protocols on the link port that connects the CP to a VL.
+        required: false
+        type: CpProtocolData[]
+  CpProtocolData:
+    usage: This type represents network protocol data.
+    properties:
+      layerProtocol:
+        description: The identifier of layer(s) and protocol(s) associated to the network address information.Permitted values: IP_OVER_ETHERNET.
+        required: true
+        type: string
+        enum: [ "IP_OVER_ETHERNET" ]
+      ipOverEthernet:
+        description: Network address data for IP over Ethernet to assign to the extCP instance. Shall be present if layerProtocol is equal to "IP_OVER_ETHERNET", and shall be absent otherwise.
+        required: false
+        type: IpOverEthernetAddressData
+
+  IpOverEthernetAddressData:
+    usage: Network address data for IP over Ethernet to assign to the extCP instance. Shall be present if layerProtocol is equal to "IP_OVER_ETHERNET", and shall be absent otherwise.
+    properties:
+      macAddress:
+        description: MAC address. If this attribute is not present, it shall be chosen by the VIM
+        required: false
+        type: MacAddress
+      ipAddresses:
+        description: List of IP addresses to assign to the CP instance. Each entry represents IP address data for fixed or dynamic IP address assignment per subnet.If this attribute is not present, no IP address shall be assigned.
+        required: false
+        type: IpAddressesData[]
+  IpAddressesData:
+    usage: This information element represents an external VL.
+    properties:
+      type:
+        usage: The type of the IP addresses
+        required: false
+        enum: [ "IPV4,IPV6" ]
+      fixedAddresses:
+        description: Fixed addresses to assign (from the subnet defined by "subnetId" if provided).
+        required: false
+        type: IpAddresses[]
+      numDynamicAddresses:
+        description: Number of dynamic addresses to assign (from the subnet defined by "subnetId" if provided).
+        required: false
+        type: boolean
+      addressRange:
+        description: An IP address range used, e.g. in case of egress connections.
+        required: false
+        type: AddressRange[]
+      subnetId:
+        description: Subnet defined by the identifier of the subnet resource in the VIM.
+        required: false
+        type: IdentifierInVim
+  IpAddressesInfo:
+    usage: Addresses assigned to the CP instance. Each entry represents IP addresses assigned by fixed or dynamic IP address assignment per subnet(Used in query).
+    properties:
+      type:
+        usage: The type of the IP addresses
+        required: false
+        enum: [ "IPV4,IPV6" ]
+      addresses:
+        description: Fixed addresses assigned (from the subnet defined by "subnetId" if provided).
+        required: false
+        type: IpAddresses[]
+      isDynamic:
+        description: Indicates whether this set of addresses was assigned dynamically (true) or based on address information provided as input from the API consumer (false). Shall be present if "addresses" is present and shall be absent otherwise.s
+        required: false
+        type: boolean
+      addressRange:
+        description: An IP address range used, e.g. in case of egress connections.
+        required: false
+        type: AddressRange[]
+      subnetId:
+        description: Subnet defined by the identifier of the subnet resource in the VIM.
+        required: false
+        type: IdentifierInVim
+  IpAddresses:
+    usage: An IPV4 or IPV6 address. Representation In case of an IPV4 address, string that consists of four decimal integers separated by dots, each integer ranging from 0 to 255. In case of an IPV6 address, string that consists of groups of zero to four hexadecimal digits, separated by colons.
+    required: false
+    type: IpAddress
+  ErrorMessage:
+    usage: Error message model.
+    properties:
+      userMessage:
+        type: string
+        required: true
+      httpStatusCode:
+        type: integer
+        required: true
+      developerMessage:
+        type: string
+        required: true
+      internalErrorCode:
+        type: string
+        required: true
+      time:
+        type: datetime
+        required: true
+
+  ResourceDefinitionAddResources:
+    usage: This type provides information of an existing or proposed resource used by the VNF
+    properties:
+      id:
+        description: Identifier of this "ResourceDefinition" structure, unique at least within the scope of the "GrantRequest" structure.
+        type: Identifier
+        required: true
+      type:
+        description: Type of the resource definition referenced.
+        type: ResourceType
+        required: true
+      vduId:
+        description: Reference to the related VDU in the VNFD applicable to this resource. Shall only be present if a VDU is applicable to this resource.
+        type: IdentifierInVnfd
+        required: false
+      resourceTemplateId:
+        description: Reference to a resource template (VnfVirtualLinkDesc, VirtualComputeDesc, VnfExtCpd, VirtualStorageDesc) in the VNFD. Shall be present for the planned creation of new resources, including temporary resources, and for the modification of existing resources. Shall be absent otherwise. For STORAGE resource type resourceTemplateId will be the storage volume size.
+        type: IdentifierInVnfd
+        required: false
+
+  ResourceDefinition:
+    usage: This type provides information of an existing or proposed resource used by the VNF
+    properties:
+      id:
+        description: Identifier of this "ResourceDefinition" structure, unique at least within the scope of the "GrantRequest" structure.
+        type: Identifier
+        required: true
+      type:
+        description: Type of the resource definition referenced.
+        type: ResourceType
+        required: true
+      vduId:
+        description: Reference to the related VDU in the VNFD applicable to this resource. Shall only be present if a VDU is applicable to this resource.
+        type: IdentifierInVnfd 
+        required: false
+      resourceTemplateId:
+        description: Reference to a resource template (VnfVirtualLinkDesc, VirtualComputeDesc, VnfExtCpd, VirtualStorageDesc) in the VNFD. Shall be present for the planned creation of new resources, including temporary resources, and for the modification of existing resources. Shall be absent otherwise.
+        type: IdentifierInVnfd
+        required: false
+      resource:
+        description: Resource information for an existing resource. Shall be present for resources that are planned to be deleted or modified. Shall be absent otherwise.
+        type:  ResourceHandle
+        required: false
+
+  ProblemDetails:
+    usage: This type provides additional information if an error occures.
+    properties:
+      type:
+        description: A URI reference that may provide human-readable documentation for the problem
+        type: Uri
+        required: false
+      title:
+        description: A short, human-readable summary of the problem type. It should not change from occurrence to occurrence of the problem, except for purposes of localization. If type is given and other than "about:blank", this attribute shall also be provided
+        type: string
+        required: false
+      status:
+        description: The HTTP status code for this occurrence of the problem
+        type: integer
+        required: true
+      detail:
+        description: A human-readable explanation specific to this occurrence of the problem.
+        type: string
+        required: true
+      instance:
+        description: A URI reference that identifies the specific occurrence of the problem. It may yield further information if dereferenced.
+        type:  Uri
+        required: false
+      additionalAttributes:
+        description: Any number of additional attributes, as defined in a specification or by an implementation.
+        type:  KeyValuePairs
+        required: false
+
+
+  LccnLinks:
+    usage: This type represents the links to resources that a notification can contain
+    required: true
+    properties:
+      vnfInstance:
+        description: Link to the resource representing the VNF instance to which the notified change applies
+        required: true
+        type: Link
+      vnfLcmOpOcc:
+        description: Link to the VNF lifecycle management operation occurrence that this notification is related to. Shall be present if there is a related lifecycle operation occurrence.
+        required: false
+        type: Link
+      subscription:
+        description: Link to the related subscription.
+        required: true
+        type: Link
+
+  VnfIdentifierCreationNotification:
+    usage: This type informs the receiver of the creation of a new VNF instance resource and the associated VNF instance identifier
+    required: false
+    properties:
+      id:
+        description: Identifier of this notification. If a notification is sent multiple times due to multiple subscriptions, the "id" attribute of all these notifications shall have the same value
+        required: true
+        type: string
+
+      notificationType:
+        type: string
+        description: Discriminator for the different notification types.Shall be set to "VnfIdentifierCreationNotification" for this notification type
+        required: true
+
+      subscriptionId:
+        description: Identifier of the subscription that this notification relates to.
+        required: false
+        type: string
+
+      _links:
+        description: Links related to this notification
+        required: true
+        type: LccnLinks
+
+      timeStamp:
+        type: string
+        description: date time  of the generation of the notification
+        required: true
+
+      vnfInstanceId:
+        type: string
+        description: The created VNF instance identifier
+        required:true
+        type: string
+
+      additionalParameters:
+        description: Additional params for create VNF Identifier notification.
+        type: VnfIdentifierCreationNotificationAdditionalParam
+        required: false
+
+  VnfIdentifierDeletionNotification:
+    usage: This type informs the receiver of the deletion of a new VNF instance resource and the associated VNF instance identifier
+    required: false
+    properties:
+      id:
+        description: Identifier of this notification. If a notification is sent multiple times due to multiple subscriptions, the "id" attribute of all these notifications shall have the same value
+        required: true
+        type: string
+
+      notificationType:
+        type: string
+        description: Discriminator for the different notification types.Shall be set to "VnfIdentifierDeletionNotification" for this notification type
+        required: true
+
+      subscriptionId:
+        description: Identifier of the subscription that this notification relates to.
+        required: false
+        type: string
+
+      _links:
+        description: Links related to this notification
+        required: true
+        type: LccnLinks
+
+      timeStamp:
+        description: date-time of the generation of the notification
+        required: true
+        type: string
+
+      vnfInstanceId:
+        description: The deleted VNF instance identifier
+        required: true
+        type: string
+
+  VnfLcmOperationOccurrenceNotification:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Identifier of this notification. If a notification is sent multiple\
+          \ times due to multiple subscriptions, the \"id\" attribute of all these\
+          \ notifications shall have the same value"
+      notificationType:
+        type: "string"
+        description: "Discriminator for the different notification types. \nShall\
+          \ be set to \" VnfLcmOperationOccurrenceNotification \" for this notification\
+          \ type"
+      subscriptionId:
+        type: "string"
+        description: "Identifier of the subscription that this notification relates\
+          \ to.<It will be hardcoded in Q4 release.>"
+        required: false
+      timeStamp:
+        type: "time-only"
+        description: "Date-time of the generation of the notification."
+      notificationStatus:
+        type: "string"
+        description: "Indicates whether this notification reports about the start\
+          \ of a lifecycle operation or the result of a lifecycle operation."
+        enum:
+        - "START: Informs about the start of the VNF LCM operation occurrence"
+        - "RESULT: Informs about the final or intermediate result of the VNF LCM operation\
+          \ occurrence."
+      operationState:
+        type: "LcmOperationStateType"
+        description: "The state of the VNF LCM operation occurrence"
+      vnfInstanceId:
+        type: "string"
+        description: "The identifier of the VNF instance affected."
+      operation:
+        type: "string"
+        description: "The lifecycle management operation."
+        enum:
+        - "INSTANTIATE"
+        - "SCALE"
+        - "SCALE_TO_LEVEL"
+        - "CHANGE_FLAVOUR"
+        - "TERMINATE"
+        - "HEAL"
+        - "OPERATE"
+        - "CHANGE_EXT_CONN"
+        - "MODIFY_INFO"
+      isAutomaticInvocation:
+        type: "boolean"
+        description: "Set to true if this VNF LCM operation occurrence has been triggered\
+          \ by an automated procedure inside the VNFM (i.e. ScaleVnf / ScaleVnfToLevel\
+          \ triggered by auto-scale, or HealVnf triggered by auto-heal).\n\nSet to\
+          \ false otherwise"
+      vnfLcmOpOccId:
+        type: "string"
+        description: "The identifier of the VNF lifecycle management operation occurrence\
+          \ associated to the notification."
+      affectedVnfcs:
+        type: "array"
+        description: "Information about VNFC instances that were affected during the\
+          \ lifecycle operation."
+        required: false
+        items:
+          type: "AffectedVnfc"
+      affectedVirtualLinks:
+        type: "array"
+        description: "Information about VL instances that were affected during the\
+          \ lifecycle operation.Shall be present if the \"notificationStatus\" is\
+          \ set to \"RESULT\" and the operation has performed any resource modification.\
+          \ Shall be absent otherwise. This attribute contains information about the\
+          \ cumulative changes to virtualised resources that were performed so far\
+          \ by the VNF LCM operation occurrence and by any of the error handling procedures\
+          \ for that operation occurrence"
+        required: false
+        items:
+          type: "AffectedVirtualLink"
+      affectedVirtualStorage:
+        type: "array"
+        description: "This type provides information about added, deleted, modified\
+          \ and temporary virtual storage resources"
+        required: false
+        items:
+          type: "AffectedVirtualStorage"
+      changedInfo:
+        type: "VnfInfoModificationRequest"
+        description: "Information about the changed VNF instance information, including\
+          \ changed VNF configurable properties. Shall be present if the "notificationStatus"\
+          \ is set to "RESULT" and the operation has performed any changes to VNF\
+          \ instance information, including VNF configurable properties. Shall be\
+          \ absent otherwise.This parameter is not supported currently"
+        required: false
+      changedExtConnectivity:
+        type: "ExtVirtualLinkInfo"
+        description: "Information about changed external connectivity, if this notification\
+          \ represents the result of a lifecycle operation occurrence. Shall be present\
+          \ if the \"notificationStatus\" is set to \"RESULT\" and the \"operation\"\
+          \ is set to \"CHANGE_EXT_CONN\". Shall be absent otherwise.This parameter is not supported currently"
+        required: false
+      error:
+        type: "string"
+        description: "Details of the latest error, if one has occurred during executing\
+          \ the LCM operation (see clause 4.3.5). Shall be present if the \"operationState\"\
+          \ attribute is \"FAILED_TEMP\" or \"FAILED\", and shall be absent otherwise."
+        required: false
+      _links:
+        type: "LccnLinks"
+        description: "Links to resources related to this notification."
+  identifer:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        required: false
+  LcmOperationStateType:
+    type: "object"
+    description: "State of Operation"
+    properties:
+      State:
+        type: "string"
+        description: "State of Operation"
+        enum:
+        - "STARTING: LCM operation is starting"
+        - "PROCESSING:The LCM operation is currently in execution."
+        - "COMPLETED:The LCM operation has been completed successfully."
+        - "FAILED_TEMP:The LCM operation has failed and execution has stopped, but\
+          \ the execution of the operation is not considered to be closed.(Not supported)"
+        - "FAILED:The LCM operation has failed and it cannot be retried or rolled\
+          \ back, as it is determined that such action won't succeed."
+        - "ROLLING_BACK:The LCM operation is currently being rolled back.(Partially supported)"
+        - "ROLLED_BACK:The LCM operation has been successfully rolled back, i.e. The\
+          \ state of the VNF prior to the original operation invocation has been restored\
+          \ as closely as possible"
+        required: false
+  AffectedVnfc:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Identifier of the Vnfc instance, identifying the applicable\
+          \ \"vnfcResourceInfo\" entry in the \"VnfInstance\" data type"
+      vduId:
+        type: "string"
+        description: "Identifier of the related VDU in the VNFD."
+      changeType:
+        type: "string"
+        description: "Signals the type of change"
+        enum:
+        - "ADDED"
+        - "REMOVED"
+        - "MODIFIED:(Not supported)"
+        - "TEMPORARY:For a temporary resource, an AffectedVnfc structure exists as\
+          \ long as the temporary resource exists.(Not supported)"
+        required: false
+      computeResource:
+        type: "ResourceHandle"
+        description: "Reference to the VirtualCompute resource. Detailed information\
+          \ is (for new and modified resources) or has been (for removed resources)\
+          \ available from the VIM"
+        required: false
+      addedStorageResourceIds:
+        type: "string"
+        description: "References to VirtualStorage resources that have been added.\n\
+          \nEach value refers to a VirtualStorageResourceInfo item in the VnfInstance\
+          \ that was added to the VNFC.\n\nIt shall be provided if at least one storage\
+          \ resource was added to the VNFC."
+        required: false
+      removedStorageResourceIds:
+        type: "string"
+        description: "Required in case of termination.References to VirtualStorage resources that have been removed.\n\
+          \nThe value contains the identifier of a VirtualStorageResourceInfo item\
+          \ that has been removed from the VNFC, and might no longer exist in the\
+          \ VnfInstance.\n\nIt shall be provided if at least one storage resource\
+          \ was removed from the VNFC."
+        required: false
+      metadata:
+        type: KeyValuePairs
+        description: "Metadata about this resource.The content of this attribute shall be a copy of the content of the metadata attribute of the VnfcResourceInfo structure"
+        required: false
+      affectedVnfcCpIds:
+        type: KeyValuePairs
+        description: "Identifiers of CP(s) of the VNFC instance that were affected by the change.Shall be present for those affected CPs of the VNFC instance that are associated to an external CP of the VNF instance.May be present for further affected CPs of the VNFC instance."
+        required: false
+  AffectedVirtualLink:
+    type: "object"
+    description: "This type provides information about added, deleted, modified and\
+      \ temporary VLs"
+    properties:
+      id:
+        type: "string"
+        description: "Identifier of the virtual link instance, identifying the applicable\
+          \ \"vnfVirtualLinkResourceInfo\" entry in the \"VnfInstance\" data type"
+      virtualLinkDescId:
+        type: "string"
+        description: "This parameter is not supported currently.Identifier of the related VLD in the VNFD"
+      changeType:
+        type: "string"
+        description: "Signals the type of change."
+        enum:
+        - "ADDED"
+        - "REMOVED"
+        - "MODIFIED. Not supported"
+        - "TEMPORARY Not supported"
+        - "LINK_PORT_ADDED Not supported"
+        - "LINK_PORT_REMOVED Not supported"
+      LcmOpernetworkResource:
+        type: "ResourceHandle"
+        description: "Reference to the VirtualNetwork resource.Detailed information\
+          \ is (for new and modified resources) or has been (for removed resources)\
+          \ available from the VIM"
+      metadata:
+        type: KeyValuePairs
+        description: "Metadata about this resource.The content of this attribute shall be a copy of the content of the metadata attribute of the VnfcResourceInfo structure"
+        required: false
+  AffectedVirtualStorage:
+    type: "object"
+    properties:
+      id:
+        type: "string"
+        description: "Identifier of the storage instance, identifying the applicable\
+          \ \"virtualStorageResourceInfo\" entry in the \"VnfInstance\" data type"
+      virtualStorageDescId:
+        type: "string"
+        description: "Identifier of the related VirtualStorage descriptor in the VNFD.This parameter is not supported currently"
+      changeType:
+        type: "string"
+        description: "Signals the type of change."
+        enum:
+        - "ADDED"
+        - "REMOVED"
+        - "MODIFIED"
+        - "TEMPORARY:For a temporary resource, an AffectedVirtualStorage structure\
+          \ exists as long as the temporary resource exists"
+      storageResource:
+        type: "ResourceHandle"
+        description: "Reference to the VirtualStorage resource. Detailed information\
+          \ is (for new and modified resources) or has been (for removed resources)\
+          \ available from the VIM."
+      metadata:
+        type: KeyValuePairs
+        description: "Metadata about this resource.The content of this attribute shall be a copy of the content of the metadata attribute of the VnfcResourceInfo structure"
+        required: false
+  VnfInfoModificationRequest:
+    type: "object"
+    properties:
+      vnfInstanceName:
+        type: "string"
+        description: "New value of the \"vnfInstanceName\" attribute in \"VnfInstance\"\
+          , or \"null\" to remove the attribute. This parameter can be updated only if VNF is in NOT_INSTANTIATED state."        
+        required: false
+      vnfInstanceDescription:
+        type: "string"
+        description: "New value of the \"vnfInstanceDescription\" attribute in \"\
+          VnfInstance\", or \"null\" to remove the attribute."
+        required: false
+      vnfPkgId:
+        type: "string"
+        description: "New value of the \"vnfPkgId\" attribute in \"VnfInstance\"\
+          . The value \"null\" is not permitted"
+        required: false
+      vnfConfigurableProperties(Key-Value pair):
+        type: "string"
+        description: "Modifications of the \"vnfConfigurableProperties\" attribute\
+          \ in \"VnfInstance\". If present, these modifications shall be applied according\
+          \ to the rules of JSON Merge PATCH."
+        required: false
+      metadata:
+        type: "string"
+        description: "Modifications of the \"metadata\" attribute in \"VnfInstance\"\
+          . If present, these modifications shall be applied according to the rules\
+          \ of JSON Merge PATCH. This parameter can be updated only if VNF is in INSTANTIATED state"
+        required: false
+      extensions(Key-Value pair):
+        type: "string"
+        description: "Modifications of the \"extensions\" attribute in \"VnfInstance\"\
+          . If present, these modifications shall be applied according to the rules\
+          \ of JSON Merge PATCH. This parameter can be updated only if VNF is in INSTANTIATED state"
+        required: false
+      vnfcInfoModifications:
+        type: "VnfcInfoModifications"
+        description: "New content of certain entries in the \"vimConnectionInfo\"\
+          \ attribute array in \"VnfInstance\" . This parameter is not supported \
+          \ currently."
+        required: false
+
+  TerminateVnfRequest:
+    usage: 
+    properties:
+      terminationType:
+        description:
+        required: true
+        type: TerminationType
+      gracefulTerminationTimeout:
+        description:
+        required: false
+        type: integer
+      additionalParams:
+        description:
+        type: KeyValuePairs
+        required: false        
+
+  ChangeCurrentVnfPkgRequest:
+    usage: 
+    properties:
+      vnfdId:
+        description:
+        required: true
+        type: VnfdId
+      extVirtualLinks:
+        description: Information about external VLs to connect the VNF to.
+        required: false
+        type: ExtVirtualLinkData[]
+      extManagedVirtualLinks:
+        description: Information about internal VLs that are managed by the NFVO.
+        required: false
+        type: ExtManagedVirtualLinkData[]
+      additionalParams:
+        description:
+        type: KeyValuePairs
+        required: false
+      vnfConfigurableProperties:
+        description:
+        type: KeyValuePairs
+        required: false
+      extensions:
+        description:
+        type: KeyValuePairs
+        required: false
+      vimConnectionInfo:
+        description:
+        type: KeyValuePairs
+        required: false
+
+  VnfLcmOpOccUpdate:
+    type: "object"
+    properties:
+      message:
+        type: "string"
+        description: "Displays the message of successfully updated operationStatus in vnfLifeCycleOperation table"
+
+  VnfLcmOpOcc:
+    type: "object"
+    properties:
+      id:
+        type: "Identifier"
+      operationState:
+        type: "LcmOperationStateType"
+        description: "The state of the VNF LCM operation occurrence"
+      vnfInstanceId:
+        type: "Identifier"
+        description: "Identifier of the VNF instance to which the operation applies"
+      grantId:
+        type: "Identifier"
+        description: "Identifier of the grant related to this VNF LCM operation"
+        required: false
+      stateEnteredTime:
+        type: "datetime"
+        description: "Date-time when the current state was entered"
+      startTime:
+        type: "datetime"
+        description: "Date-time of the start of the operation"
+      operation:
+        type: "LcmOperationType"
+        description: "Type of the actual LCM operation represented by this VNF LCM\
+          \ operation occurrence"
+      isAutomaticInvocation:
+        type: "boolean"
+        description: "Set to true if this VNF LCM operation occurrence has been triggered\
+          \ by an automated procedure inside the VNFM (i.e. ScaleVnf / ScaleVnfToLevel\
+          \ triggered by auto-scale, or HealVnf triggered by auto-heal).\n\nSet to\
+          \ false otherwise.(Always false supported)"
+      operationParams:
+        type: "object"
+        description: "Input parameters of the LCM operation. This attribute shall\
+          \ be formatted according to the request data type of the related LCM operation.\
+          \ \n\nThe following mapping between operationType and the data type of this\
+          \ attribute shall apply:\n   - INSTANTIATE: InstantiateVnfRequest\n   -\
+          \ TERMINATE: TerminateVnfRequest\n   - SCALE: ScaleVnfRequest (Not supported)\n\
+          \   - SCALE_TO_LEVEL: ScaleVnfToLevelRequest (Not supported)\n   - CHANGE_FLAVOUR:\
+          \ ChangeVnfFlavourRequest (Not supported)\n   - OPERATE: OperateVnfRequest\
+          \ (Not supported)\n   - HEAL: HealVnfRequest (Not supported)\n   - CHANGE_EXT_CONN:\
+          \ ChangeExtVnfConnectivityRequest (Not supported)\n   - MODIFY_INFO: VnfInfoModificationRequest\
+          \ "
+      isCancelPending:
+        type: "boolean"
+        description: "If the VNF LCM operation occurrence is in \"STARTING\", \"PROCESSING\"\
+          \ or \"ROLLING_BACK\" state and the operation is being cancelled, this attribute\
+          \ shall be set to true. Otherwise, it shall be set to false.(Always false\
+          \ supported)"
+      resourceChanges:
+        type: "object"
+        description: "This attribute contains information about the cumulative changes\
+          \ to virtualised resources that were performed so far by the LCM operation\
+          \ since its start, if applicable."
+        required: false
+        properties:
+          affectedVnfcs:
+            type: "array"
+            description: "Information about VNFC instances that were affected during\
+              \ the lifecycle operation"
+            required: false
+            items:
+              type: "AffectedVnfc"
+          affectedVirtualLinks:
+            type: "array"
+            description: "Information about VL instances that were affected during\
+              \ the lifecycle operation"
+            required: false
+            items:
+              type: "AffectedVirtualLink"
+          affectedVirtualStorages:
+            type: "array"
+            description: "Information about virtualised storage instances that were\
+              \ affected during the lifecycle operation"
+            required: false
+            items:
+              type: "AffectedVirtualStorage"
+      error:
+        type: "string"
+        description: "If \"operationState\" is \"FAILED_TEMP\" or \"FAILED\" or \"\
+          operationState\" is \"PROCESSING\" or \"ROLLING_BACK\" and previous value\
+          \ of \"operationState\" was \"FAILED_TEMP\", this attribute shall be present\
+          \ and contain error information, unless it has been requested to be excluded\
+          \ via an attribute selector."
+        required: false
+      _links:
+        type: "object"
+        description: "Links to resources related to this resource"
+        properties:
+          self:
+            type: "Link"
+            description: "Link to the VNF instance that the operation applies to."
+            required: false
+          vnfInstance:
+            type: "Link"
+            description: "Link to the VNF instance that the operation applies to"
+            required: false
+          grant:
+            type: "Link"
+            description: "Link to the grant for this operation, if one exists.This \
+              \ parameter is not supported currently"
+            required: false
+          cancel:
+            type: "Link"
+            description: "Link to the task resource that represents the \"cancel\"\
+              \ operation for this VNF LCM operation occurrence, if cancelling is\
+              \ currently allowed. This parameter is not supported currently"
+            required: false
+          retry:
+            type: "Link"
+            description: "Link to the task resource that represents the \"retry\"\
+              \ operation for this VNF LCM operation occurrence, if retrying is currently\
+              \ allowed.This parameter is not supported currently."
+            required: false
+          rollback:
+            type: "string"
+            description: "Link to the task resource that represents the \"rollback\"\
+              \ operation for this VNF LCM operation occurrence, if rolling back is\
+              \ currently allowed.This parameter is not supported currently."
+            required: false
+          fail:
+            type: "Link"
+            description: "Link to the task resource that represents the \"fail\" operation\
+              \ for this VNF LCM operation occurrence, if declaring as failed is currently\
+              \ allowed.This parameter is not supported currently."
+            required: false
+
+  VnfLcmOpOccs:
+    type: "array"
+    description: "This resource represents all VNF LCM operation occurrence. The client\
+      \ can use this resource to read information about the VNF LCM operation occurrence."
+    items:
+      type: "VnfLcmOpOcc"
+
+  VnfInstances:
+    type: "array"
+    description: "This resource represents all VNF instance. The client can use this resource to read information about the VNF instances."
+    items:
+      type: "VnfInstance"
+
+  VnfcInfoModifications:
+    type: "object"
+    properties:  
+      id:
+        type: "IdentifierInVnf"
+        description: "Identifier of the VNFC instance of which the information is to be modified"
+      vnfcConfigurableProperties:
+        type: "KeyValuePairs"
+        description: "Changes of the configurable properties of the VNFCinstance"
+
+  VimConnectionInfo:
+    usage: This information element provides information regarding a VIM
+    properties:
+      id:
+        description: The identifier of the VIM connection.
+        type: Identifier
+        required: true
+      vimId:
+        description: The identifier of the VIM instance. This identifier is managed by the NFVO.
+        type: Identifier
+        required: false
+      vimType:
+        description: Discriminator for the different types of the VIM information.
+        type: VimType
+        required: true
+      interfaceInfo:
+        description: Information about the interface or interfaces to the VIM.
+        type: InterfaceInfo
+        required: false
+      accessInfo:
+        description: Authentication credentials for accessing the VIM, and other access-related information such as tenants or infrastructure resource groups.If vimType is one CEE or OPENSTACK, for keystone v2.0 , only projectId or projectName can be provided and for keystone v3 a combination of projectName and domainName or a combination of projectId and domainName should be provided and  if VimType is VCD then projectName is mandatory.
+        type: AccessInfo
+        required: false
+      extra:
+        description: VIM type specific additional information. The applicable structure, and whether or not this attribute is available, is dependent on the content of vimType
+        type: KeyValuePairs
+        required: false
+
+  VimConnectionInformation:
+    usage: This information element provides information regarding a VIM
+    properties:
+      id:
+        description: The identifier of the VIM connection.
+        type: Identifier
+        required: true
+      vimId:
+        description: The identifier of the VIM instance. This identifier is managed by the NFVO.
+        type: Identifier
+        required: false
+      vimType:
+        description: Discriminator for the different types of the VIM information.
+        type: VimType
+        required: true
+      interfaceInfo:
+        description: Information about the interface or interfaces to the VIM.
+        type: InterfaceInfo
+        required: false
+      accessInfo:
+        description: Authentication credentials for accessing the VIM, and other access-related information such as tenants or infrastructure resource groups.If vimType is one CEE or OPENSTACK, for keystone v2.0 , only projectId or projectName can be provided and for keystone v3 a combination of projectName and domainName or a combination of projectId and domainName should be provided.
+        type: AccessInformation
+        required: false
+      extra:
+        description: VIM type specific additional information. The applicable structure, and whether or not this attribute is available, is dependent on the content of vimType
+        type: KeyValuePairs
+        required: false
+
+  VnfPackage:
+    type: "object"
+    properties:
+      vnfProductName:
+        type: "string"
+        description: "Name to identify the VNF Product."
+        required: false
+      vnfdId:
+        type: "string"
+        description: "Identifier of the VNFD"
+        required: false
+      vnfSoftwareVersion:
+        type: "string"
+        description: "Software version of the VNF that will be created using the VNFD."
+        required: false
+      vnfdVersion:
+        type: "string"
+        description: "Identifies the version of the VNFD."
+        required: false
+
+  VnfPackages:
+    type: "array"
+    description: "This data type provides information the VNF packages"
+    items:
+      type: "VnfPackage"
+
+  VcdPackageOnboardRequest:
+    type: "object"
+    properties:
+      vAppTemplateName:
+        type: "string"
+        description: "Name of vAppTemplate to be created."
+        required: true
+      vAppTemplateDescription:
+        type: "string"
+        description: "Description of vAppTemplate"
+        required: false
+      catalogName:
+        type: "string"
+        description: "Name of the catalog in VCD VIM where package needs to be uploaded."
+        required: true
+      ovfPackage:
+        type: "string"
+        description: "OVF descriptor file name."
+        required: false
+      ovfDirectory:
+        type: "string"
+        description: "Abosolute path of the OVF package in the VNF-LCM/ VM VNFM file system"
+        required: true
+      vimConnectionInfo:
+        description: Information about VIM connections to be used for managing the resources for the VNF instance, or refer to external / externally-managed virtual links.
+        required: false
+        type: VimConnectionInfo[]
+
+  ApiVersionInformation:
+    type: "object"
+    properties:
+      uriPrefix:
+        type: "string"
+        description: "URI prefix for the API"
+        required: "true"
+      version:
+        type: "string"
+        description: "Identifies a supported version."
+        required: "true"
+      isDeprecated:
+        type: "string"
+        description: "Indicates whether use of the version signaled by the version attribute is deprecated or not"
+        required: "true"

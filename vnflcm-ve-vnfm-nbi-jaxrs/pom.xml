@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <parent>
+        <artifactId>vnflcm-ve-vnfm-nbi</artifactId>
+        <groupId>com.ericsson.oss.services.nbi.vnflcm</groupId>
+        <version>1.72.2-SNAPSHOT</version>
+    </parent>
+
+    <artifactId>vnflcm-ve-vnfm-nbi-jaxrs</artifactId>
+    <packaging>jar</packaging>
+    <name>[${project.parent.artifactId}] JAXRS module</name>
+
+    <dependencies>
+        <!-- Provides annotations for validation of rest models as recommended by rest-sdk. 
+        Contains additional annotations those are built on top of javax.validation.api.
+        The default validator for RestEasy -->
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-databind</artifactId>
+            <version>${version.jackson-databind}</version>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.fasterxml.jackson.core</groupId>
+            <artifactId>jackson-annotations</artifactId>
+            <version>${version.jackson-annotations}</version>
+            <scope>provided</scope>
+        </dependency>
+    <!-- The default deserialization provider for RestEasy. Used to customize
+        the deserialization process-->
+        <dependency>
+             <groupId>org.jboss.resteasy</groupId>
+                       <artifactId>resteasy-jackson-provider</artifactId>
+                       <version>${version.rest-easy}</version>
+                       <scope>provided</scope>
+               </dependency>
+               <dependency>
+                   <groupId>org.jboss.resteasy</groupId>
+                   <artifactId>resteasy-validator-provider</artifactId>
+                   <version>${version.rest-easy}</version>
+                   <scope>provided</scope>
+               </dependency>
+               <dependency>
+                   <groupId>jakarta.validation</groupId>
+                   <artifactId>jakarta.validation-api</artifactId>
+                   <version>2.0.2</version>
+                   <scope>provided</scope>
+               </dependency>
+        <dependency>
+            <groupId>org.glassfish</groupId>
+            <artifactId>jakarta.el</artifactId>
+            <version>3.0.2</version>
+            <scope>provided</scope>
+        </dependency>
+               <dependency>
+            <groupId>org.slf4j</groupId>
+            <artifactId>slf4j-log4j12</artifactId>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+</project>

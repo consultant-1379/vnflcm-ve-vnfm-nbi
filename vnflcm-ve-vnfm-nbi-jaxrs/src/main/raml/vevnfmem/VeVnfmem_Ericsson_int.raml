@@ -1,0 +1,701 @@
+#%RAML 1.0
+---
+title: Ve-Vnfm API v1 Documentation
+baseUri: http://mocksvc.ericsson.com/vnflcm/rest
+version: 1.1.1
+protocols: [  HTTP, HTTPS ]
+mediaType: application/json
+
+uses:
+  DatatypesLib: libraries/SOL241/Ve-Vnfm-em_data_types.raml
+
+resourceTypes:
+
+###############
+# API:
+###############
+/vevnfmem/vnflcm/v1/vnf_instances:
+  description: |
+   This resource represents VNF instances. The client can use this resource to create individual VNF instance resource and get all VNF instance resources.
+  post:
+    description: |
+      This operation creates a new VNF instance resource.
+    body:
+        type: DatatypesLib.CreateVnfRequest
+      
+    responses:
+      201:
+        headers:
+           Location:
+             description: Contains the URI of the newly-created VNF resource.
+             type: DatatypesLib.Uri
+        body:
+            type: DatatypesLib.VnfInstance
+           
+      422:
+        body:
+            type: DatatypesLib.ProblemDetails
+            
+      400:
+        body:
+            type: DatatypesLib.ProblemDetails
+           
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails                         
+            
+      403:
+        body:
+            type: DatatypesLib.ProblemDetails
+           
+      404:
+        body:
+            type: DatatypesLib.ProblemDetails
+        
+      401:
+        body:
+            type: DatatypesLib.ProblemDetails
+        
+      405:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+  get:
+    description: |
+      The GET method retrieves information about all VNF instances .
+    responses:
+      200:
+        body:
+            type: DatatypesLib.VnfInstances
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+      404:
+        body:
+            type: DatatypesLib.ProblemDetails           
+           
+/vevnfmem/vnflcm/v1/vnf_instances/{vnfInstanceId}/instantiate:
+  description: |
+   This task resource represents the "Instantiate VNF" operation. The client can use this resource to instantiate a VNF instance.
+  uriParameters:
+    vnfInstanceId:
+      type: DatatypesLib.VnfInstanceId
+  post:
+    description: |
+      This operation instantiates a particular VNF instance based on the definition in the VNFD. 
+    body:
+        type: DatatypesLib.InstantiateVNFRequest
+      
+    responses:
+      202:
+        headers:
+           Location:
+             description: Contains the URI of the newly-created "VNF LCM operation occurrence" resource corresponding to the operation.
+             type: DatatypesLib.Uri
+             example: 
+           
+      422:
+        body:
+            type: DatatypesLib.ProblemDetails
+            
+      400:
+        body:
+            type: DatatypesLib.ProblemDetails
+            
+      409:
+        body:
+            type: DatatypesLib.ProblemDetails
+            
+      412:
+        body:
+            type: DatatypesLib.ProblemDetails            
+           
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails                         
+            
+      403:
+        body:        
+            type: DatatypesLib.ProblemDetails                     
+           
+      404:
+        body:
+            type: DatatypesLib.ProblemDetails
+        
+      401:
+        body:
+            type: DatatypesLib.ProblemDetails
+        
+      405:
+        body:
+            type: DatatypesLib.ProblemDetails
+          
+            
+/vevnfmem/vnflcm/v1/vnf_instances/{vnfInstanceId}: 
+  description: |
+   This resource represents an individual VNF instance. The client can use this resource to read information about the VNF instance.
+  uriParameters:
+    vnfInstanceId:
+      type: DatatypesLib.VnfInstanceId
+  get:
+    description: |
+      The GET method retrieves information about a VNF instance by reading an individual VNF instance resource.
+
+      
+    responses:
+      200:
+        body:
+            type: DatatypesLib.VnfInstance
+           
+        
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+            
+      404:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+  patch:
+    description: |
+      The PATCH method modifies an individual VNF instance resource.
+    body:
+      type: DatatypesLib.VnfInfoModificationRequest
+    responses:
+      202:
+        headers:
+           Location:
+             description: Contains the URI of the newly-created "VNF LCM operation occurrence" resource corresponding to the operation.
+      409:
+        body:
+            type: DatatypesLib.ProblemDetails
+      412:
+         body:
+            type: DatatypesLib.ProblemDetails  
+     500:
+        body:
+            type: DatatypesLib.ProblemDetails
+      405:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+  delete:
+    description: |
+      This operation deletes a VNF instance identifier and the associated instance of a VnfInfo information element in the NOT_ INSTANTIATED state.
+    responses:
+      204:
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+      401:
+        body:
+            type: DatatypesLib.ProblemDetails
+      403:
+        body:
+            type: DatatypesLib.ProblemDetails
+      404:
+        body:
+            type: DatatypesLib.ProblemDetails
+      409:
+        body:
+            type: DatatypesLib.ProblemDetails
+      412:
+        body:
+            type: DatatypesLib.ProblemDetails
+      422:
+        body:
+            type: DatatypesLib.ProblemDetails
+      405:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+/vnf_instances/{vnfInstanceId}/terminate:
+  description: |
+    This task resource represents the "Terminate VNF" operation. The client can use this resource to terminate a VNF instance.
+  uriParameters:
+    vnfInstanceId:
+      type: DatatypesLib.VnfInstanceId
+  post:
+    description: |
+      This operation terminates a particular VNF instance.
+
+    body:
+      DatatypesLib.TerminateVnfRequest
+
+    responses:
+      202:
+        headers:
+           Location:
+             description: Contains the URI of the newly-created "VNF LCM operation occurrence" resource corresponding to the operation.
+             type: DatatypesLib.Uri
+      400:
+        body:
+            type: DatatypesLib.ProblemDetails
+      401:
+        body:
+      403:
+        body:
+            type: DatatypesLib.ProblemDetails
+      404:
+        body:
+      409:
+        body:
+            type: DatatypesLib.ProblemDetails
+      412:
+        body:
+            type: DatatypesLib.ProblemDetails
+      422:
+        body:
+            type: DatatypesLib.ProblemDetails
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+      405:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+/vnf_instances/{vnfInstanceId}/change_vnfpkg:
+  description: |
+    This operation enables the NFVO to request the VNFM to change the current VNF Package
+  uriParameters:
+    vnfInstanceId:
+      type: DatatypesLib.VnfInstanceId
+  post:
+    description: |
+      This operation changes the current VNF Package.
+
+    body:
+      DatatypesLib.ChangeCurrentVnfPkgRequest
+
+    responses:
+      202:
+        headers:
+           Location:
+             description: Contains the URI of the newly-created "VNF LCM operation occurrence" resource corresponding to the operation.
+             type: DatatypesLib.Uri
+      400:
+        body:
+            type: DatatypesLib.ProblemDetails
+      401:
+        body:
+      403:
+        body:
+            type: DatatypesLib.ProblemDetails
+      404:
+        body:
+      409:
+        body:
+            type: DatatypesLib.ProblemDetails
+      412:
+        body:
+            type: DatatypesLib.ProblemDetails
+      422:
+        body:
+            type: DatatypesLib.ProblemDetails
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+      405:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+/vevnfmem/vnflcm/v1/vnf_lcm_op_occs/{vnfLcmOpOccId}: 
+  description: |
+   This resource represents an individual VNF LCM operation occurrence. The client can use this resource to read information about the VNF LCM operation occurrence.
+   Note: To identify the sensitive data for a LCM operation, VNF package with VNFD should be available in VNF-LCM/VM VNFM. 
+  uriParameters:
+    vnfLcmOpOccId:
+      type: DatatypesLib.LifecycleOperationOccurrenceId
+  get:
+    description: |
+      The GET method retrieves information about a VNF LCM operation occurrence by reading an individual VNF LCM operation occurrence resource.
+     
+    responses:
+      200:
+        body:
+            type: DatatypesLib.VnfLcmOpOcc
+      400:
+        body:
+            type: DatatypesLib.ProblemDetails
+      401:
+        body:
+            type: DatatypesLib.ProblemDetails
+      404:
+        body:
+            type: DatatypesLib.ProblemDetails
+      422:
+        body:
+            type: DatatypesLib.ProblemDetails
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails  
+      503:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+  patch:
+    description: |
+      The PATCH method updates the operationStatus in VNFLifeCycleOperation table for the given vnfLifeCycleOperationId.
+      <table style = "width 100%" border="1">
+      <caption align="left"><b>Query Parameters</b></caption>
+        <tr>
+            <th>Parameter</th>
+            <th>Type</th>
+            <th>Example</th>
+        </tr>
+        <tr>
+            <td>operationStatus</td>
+            <td>String</td>
+            <td>/vevnfmem/vnflcm/v1/vnf_lcm_op_occs/d08fcbc8-474f-4673-91ee-761fd83991e6?operationStatus=FAILED</td>
+        </tr>
+      </table>
+      <br>
+      <table style = "width 100%">
+        <tr>
+          <td>Following query parameters can be supplied to the resource:</td>
+        </tr>
+        <tr>
+          <td colspan="2">operationStatus - Status to be updated for the given vnfLifeCycleOperationId. Status to be updated shall be one of the terminal state (FAILED, ROLLED_BACK or CANCELLED)</td>
+        </tr>
+      </table>
+    responses:
+      200:
+        body:
+            type: DatatypesLib.VnfLcmOpOccUpdate
+      400:
+        body:
+            type: DatatypesLib.ProblemDetails
+      401:
+        body:
+            type: DatatypesLib.ProblemDetails
+      404:
+        body:
+            type: DatatypesLib.ProblemDetails
+      422:
+        body:
+            type: DatatypesLib.ProblemDetails
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails  
+      503:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+/vevnfmem/vnflcm/v1/vnf_lcm_op_occs: 
+  description: |
+   This resource represents all VNF LCM operation occurrence. The client can use this resource to read information about the VNF LCM operation occurrence.
+   Note: To identify the sensitive data for a LCM operation, VNF package with VNFD should be available in VNF-LCM/VM VNFM. 
+  get:
+    description: |
+      The GET method retrieves information about all VNF LCM operation occurrence.
+    responses:
+      200:
+        body:
+            type: DatatypesLib.VnfLcmOpOccs
+      400:
+        body:
+            type: DatatypesLib.ProblemDetails
+      401:
+        body:
+            type: DatatypesLib.ProblemDetails
+      404:
+        body:
+            type: DatatypesLib.ProblemDetails
+      422:
+        body:
+            type: DatatypesLib.ProblemDetails
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+      503:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+/vevnfmem/vnflcm/v1/vnf_instances/{vnfInstanceId}/scale:
+  description: |
+   This task resource represents the "Scaling VNF" operation. The client can use this resource to scale-out/scale-in a VNF instance.
+  uriParameters:
+    vnfInstanceId:
+      type: DatatypesLib.VnfInstanceId
+  post:
+    description: |
+      This operation scales a VNF instance resource.
+    body:
+        type: DatatypesLib.ScaleVnfRequest
+
+    responses:
+      202:
+        headers:
+           Location:
+             description: Contains the URI of the newly-created "VNF LCM operation occurrence" resource corresponding to the operation.
+             type: DatatypesLib.Uri
+             example:
+
+      403:
+        body:
+            type: DatatypesLib.ProblemDetails
+            
+      404:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+      409:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+            
+      405:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+/vevnfmem/vnflcm/v1/vnf_instances/{vnfInstanceId}/operate:
+  description: |
+   This task resource represents the "Operate VNF" operation. The client can use this resource to change the state of a VNF instance.
+  uriParameters:
+    vnfInstanceId:
+      type: DatatypesLib.VnfInstanceId
+  post:
+    description: |
+      This operation changes the state of a VNF instance.
+    body:
+        type: DatatypesLib.OperateVnfRequest
+
+    responses:
+      202:
+         headers:
+           Location:
+             description: Contains the URI of the newly-created "VNF LCM operation occurrence" resource corresponding to the operation.      
+      404:
+        body:
+            type: DatatypesLib.ProblemDetails
+      409:
+        body:
+            type: DatatypesLib.ProblemDetails  
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+/vevnfmem/vnflcm/v1/vnf_instances/{vnfInstanceId}/heal:
+  description: |
+   This task resource represents the "Healing VNF" operation. The client can use this resource to heal a VNF instance.
+  uriParameters:
+    vnfInstanceId:
+      type: DatatypesLib.VnfInstanceId
+  post:
+    description: |
+      This operation scales a VNF instance resource.
+    body:
+        type: DatatypesLib.HealVnfRequest
+
+    responses:
+      202:
+        headers:
+           Location:
+             description: Contains the URI of the newly-created "VNF LCM operation occurrence" resource corresponding to the operation.
+             type: DatatypesLib.Uri
+             example:
+
+      403:
+        body:
+            type: DatatypesLib.ProblemDetails
+            
+      404:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+      409:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+            
+      405:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+/vevnfmem/vnflcm/v1/subscriptions:
+  description: |
+   This resource represents subscriptions. The client can use this resource to subscribe to notifications related to VNF life cycle management, and to query its subscriptions.
+  post:
+    description: |
+      This operation subscribe to notifications related to VNF life cycle management.
+    body:
+        type: DatatypesLib.LccnSubscriptionRequest
+
+    responses:
+      201:
+        headers:
+           Location:
+             description: Contains the URI of the newly-created "VNF LCM operation occurrence" resource corresponding to the operation.
+             type: DatatypesLib.Uri
+        body:
+            type: DatatypesLib.LccnSubscription
+
+      404:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+      409:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+/vevnfmem/vnflcm/v1/vnf_packages:
+  description:
+   This resource represents a list of on-boarded VNF packages. The client can use this resource to read information about the on-boarded VNF packages.
+  queryParameters:
+    vnfProductName:
+      type: DatatypesLib.VnfProductName
+  get:
+    description: |
+      The GET method retrieves information about all on-boarded VNF packages.
+
+    responses:
+      200:
+        body:
+            type: DatatypesLib.VnfPackages
+      400:
+        body:
+            type: DatatypesLib.ProblemDetails
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+/vevnfmem/vcd/pkgOnboard:
+  description:
+   The client can use this resource to on-board OVF packages to vCloud Director VIM.
+  post:
+    description: |
+      The POST method on-boards an OVF template from the VNFL-CM/ VM-VNFM file system to vCloud Director VIM.
+    body:
+        type: DatatypesLib.VcdPackageOnboardRequest
+
+    responses:
+      202:
+        body:
+            type: DatatypesLib.VnfPackages
+      422:
+        body:
+            type: DatatypesLib.ProblemDetails
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+      405:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+/vevnfmem/vnflcm/api_versions:
+  description:
+   This resource represents api versions. The client can use this resource to read supported api versions.
+  get:
+   description:
+     The GET method accepts the request and returns the supported api versions.
+
+    responses:
+      200:
+        body:
+            type: DatatypesLib.ApiVersionInformation
+      400:
+        body:
+            type: DatatypesLib.ProblemDetails
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+/vevnfmem/vnflcm/v1/vnf_lcm_op_occs/{vnfLcmOpOccId}/retry:
+  description:
+   This task resource represents the "Retry operation" operation. The client can use this resource to initiate retrying a VNF lifecycle operation.
+   uriParameters:
+    vnfLcmOpOccId:
+      type: DatatypesLib.LifecycleOperationOccurrenceId
+  post:
+    description: |
+      The POST method initiates retrying a VNF lifecycle operation if that operation has experienced a temporary failure.
+
+    responses:
+      202:
+        body:
+
+      404:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+      409:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+            
+      405:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+/vevnfmem/vnflcm/v1/vnf_lcm_op_occs/{vnfLcmOpOccId}/fail:
+  description:
+   This task resource represents the "Fail operation" operation. The client can use this resource to mark a VNF lifecycle management operation occurrence as "failed".
+   uriParameters:
+    vnfLcmOpOccId:
+      type: DatatypesLib.LifecycleOperationOccurrenceId
+  post:
+    description: |
+      The POST method marks a VNF lifecycle management operation occurrence as "failed" if that operation occurrence is in "FAILED_TEMP" state.
+
+    responses:
+      202:
+        body:
+
+      404:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+      409:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+            
+      405:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+/vevnfmem/vnflcm/v1/vnf_lcm_op_occs/{vnfLcmOpOccId}/rollback:
+  description:
+   This task resource represents the "Rollback operation" operation. The client can use this resource to initiate rolling back a VNF lifecycle operation.
+   uriParameters:
+    vnfLcmOpOccId:
+      type: DatatypesLib.LifecycleOperationOccurrenceId
+  post:
+    description: |
+      The POST method initiates rolling back a VNF lifecycle operation if that operation has experienced a temporary failure.
+
+    responses:
+      202:
+        body:
+
+      404:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+      409:
+        body:
+            type: DatatypesLib.ProblemDetails
+
+      500:
+        body:
+            type: DatatypesLib.ProblemDetails
+            
+      405:
+        body:
+            type: DatatypesLib.ProblemDetails

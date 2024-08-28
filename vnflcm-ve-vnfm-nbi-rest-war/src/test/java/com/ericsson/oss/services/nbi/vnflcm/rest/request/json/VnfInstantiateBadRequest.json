@@ -1,0 +1,100 @@
+{
+    "vnfdId": "mme__16B",
+    "vnfInstanceDescription": "Test instance at site xyz",
+    "flavourId": "high_redundancy",
+    "vnfProductName": "MME_CXP1.0",
+    "additionalParam": {
+        "userInitData": [{
+            "vnfcName": "FSB",
+            "vnfcInstance": "0",
+            "initDataType": "URI",
+            "initData": "http://localhost:8000/sql.txt"
+        }]
+    },
+    "grantApprovalDescriptor": {
+        "vims": [{
+            "regionId": "regionOne",
+            "accessInfo": {
+                "tenantId": "TENANT_1",
+                "credentials": {
+                    "username": "username",
+                    "password": "password"
+                }
+            },
+            "interfaceEndpoint": "somehost:port"
+        }],
+        "zones": [{
+                "vimId": "TESTVIM",
+                "zoneInfoId": "Zone-22",
+                "zoneId": "AZ-A",
+                "zoneName": "zonea"
+            },
+            {
+                "vimId": "TESTVIM",
+                "zoneInfoId": "Zone-33",
+                "zoneId": "AZ-B",
+                "zoneName": "zoneb"
+            }
+        ],
+        "extVirtualLinks": [{
+                "extVirtualLinkId": "TESTextVirtualLinkId",
+                "vimId": "TESTVIM",
+                "resourceId": "resourceId-22",
+                "virtualLinkName": "TEST-VLINK",
+                "extCps": [{
+                    "cpdId": "TEScpdId",
+                    "address": [{
+                        "id": "v6",
+                        "cidr": "fd00:4888:1000:50b8:00ce:028a::24",
+                        "vnfcName": "TESTvnfcName",
+                        "vnfcInstance": "TESTvnfcInstance",
+                        "subnet": "dd247ce2-dd85-4fbe-8a97-8eb1a77c1aa5",
+                        "addr": "fd00:4888:1000:50c3:00ce:028a::10"
+                    }]
+                }]
+            },
+            {
+                "extVirtualLinkId": "TESTextVirtualLinkId",
+                "vimId": "TESTVIM",
+                "resourceId": "resourceId-22",
+                "virtualLinkName": "TEST-VLINK",
+                "extCps": [{
+                    "cpdId": "TEScpdId",
+                    "address": [{
+                        "id": "v4",
+                        "name": "TEST-NAME",
+                        "cidr": "10.12.0.0/24",
+                        "vnfcName": "TESTvnfcName",
+                        "vnfcInstance": "TESTvnfcInstance",
+                        "subnet": "dd247ce2-dd85-4fbe-8a97-8eb1a77c1aa5",
+                        "addr": "192.168.201.110"
+                    }]
+                }]
+            }
+        ],
+        "vimAssets": {
+            "softwareImages": [{
+                "vimId": "TESTVIM",
+                "vnfdSoftwareImageId": "FSB001",
+                "vimSoftwareImageId": "ccd86614-2193-46bb-800a-5e82868a3c3e",
+                "vimSoftwareImageName": "FSB"
+            }, {
+                "vimId": "TESTVIM",
+                "vnfdSoftwareImageId": "GPB001",
+                "vimSoftwareImageId": "aed86614-2193-46bb-800a-5e82868a3c4f",
+                "vimSoftwareImageName": "GPB"
+            }],
+            "computeResourceFlavours": [{
+                "vimId": "TESTVIM",
+                "resourceProviderId": "TESTRESOURCE",
+                "vnfdVirtualComputeDescId": "flavor_fsb",
+                "vimFlavourId": "MME-EC-X-FSB"
+            }, {
+                "vimId": "TESTVIM",
+                "resourceProviderId": "TESTRESOURCE",
+                "vnfdVirtualComputeDescId": "flavor_vlc",
+                "vimFlavourId": "MME-EC-X-VLC"
+            }]
+        }
+    }
+}

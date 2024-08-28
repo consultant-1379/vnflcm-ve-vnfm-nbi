@@ -1,0 +1,414 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+    <!--Please Use the latest version of integration pom.xml or the one you 
+        want to reference to -->
+    <parent>
+        <groupId>com.ericsson.nms</groupId>
+        <artifactId>integration</artifactId>
+        <version>15.2.0.32</version>
+    </parent>
+
+    <groupId>com.ericsson.oss.services.nbi.vnflcm</groupId>
+    <artifactId>vnflcm-ve-vnfm-nbi</artifactId>
+    <version>1.72.2-SNAPSHOT</version>
+    <packaging>pom</packaging>
+    <name>[${project.artifactId}] JEE6 Project</name>
+
+    <properties>
+        <ericsson.scm.url>scm:git:[fetch=]ssh://gerrit-gamma-read.seli.gic.ericsson.se:29418/OSS/VM-VNFM/com.ericsson.oss.services.nbi.vnflcm/vnflcm-ve-vnfm-nbi[push=]ssh://gerrit-gamma.gic.ericsson.se:29418/OSS/VM-VNFM/com.ericsson.oss.services.nbi.vnflcm/vnflcm-ve-vnfm-nbi</ericsson.scm.url>
+        <version.service.framework.bom>4.19.1</version.service.framework.bom>
+        <version.modeling.bom>5.1.6</version.modeling.bom>
+        <version.arquillian.bom>1.0.4.Final</version.arquillian.bom>
+        <workflow.service.bom>2.10.14</workflow.service.bom>
+
+        <version.weld>1.1.13.Final</version.weld>
+        <version.ejb>3.1</version.ejb>
+        <version.jee>6</version.jee>
+        <version.mockito>1.9.5</version.mockito>
+        <version.easymock>3.1</version.easymock>
+
+        <version.jboss.as.arquillian>7.2.0.Final</version.jboss.as.arquillian>
+        <version.arquillian.bom>1.0.4.Final</version.arquillian.bom>
+        <version.arquillian-weld-se-embedded>1.0.0.CR3</version.arquillian-weld-se-embedded>
+        <project.ear.defaultLibBundleDir>lib</project.ear.defaultLibBundleDir>
+
+        <!-- JBoss modules your service will automatically add to classpath -->
+        <project.ear.Dependencies>org.slf4j,
+            com.ericsson.oss.services.vnflcmwfs.api,
+            com.ericsson.oss.services.wfs.api
+            annotations
+            export,com.ericsson.oss.itpf.modeling.modelservice.impl
+            meta-inf export,
+            com.fasterxml.jackson.core.jackson-databind,
+            com.fasterxml.jackson.core.jackson-annotations, 
+            com.fasterxml.jackson.core.jackson-core</project.ear.Dependencies>
+        <version.sdkutils>1.2.4</version.sdkutils>
+        <version.vnflcm.service>1.96.7</version.vnflcm.service>
+        <version.vnflaf-service-model>1.0.94</version.vnflaf-service-model>
+        <version.vnflcmwfs.service>1.52.1</version.vnflcmwfs.service>
+
+        <version.rest-sdk>2.0.3</version.rest-sdk>
+        <version.rest-easy>3.9.3.SP1</version.rest-easy>
+        <version.slf4j-log4j>1.7.5</version.slf4j-log4j>
+        <version.org.mockito>1.9.5</version.org.mockito>
+        <version.org.powermock>1.6.1</version.org.powermock>
+        <version.javassist>3.20.0-GA</version.javassist>
+        <version.org.antlr>3.5</version.org.antlr>
+        <version.camunda.bom>7.11.18-ee</version.camunda.bom>
+        <version.camunda.spin.bom>1.1.0</version.camunda.spin.bom>
+        <version.commons.codec>1.4-redhat-2</version.commons.codec>
+        <version.vnflaf-rest-client>2.1.7</version.vnflaf-rest-client>
+        <version.jackson-databind>2.12.6</version.jackson-databind>
+        <version.jackson-annotations>2.12.6</version.jackson-annotations>
+        <version.jackson-core>2.12.6</version.jackson-core>
+    </properties>
+
+    <dependencyManagement>
+        <dependencies>
+            <dependency>
+                <groupId>org.camunda.bpm</groupId>
+                <artifactId>camunda-bom</artifactId>
+                <version>${version.camunda.bom}</version>
+                <scope>import</scope>
+                <type>pom</type>
+            </dependency>
+            <dependency>
+                <groupId>org.camunda.spin</groupId>
+                <artifactId>camunda-spin-bom</artifactId>
+                <scope>import</scope>
+                <type>pom</type>
+                <version>${version.camunda.spin.bom}</version>
+            </dependency>
+            <!-- here we specify what version of Service Framework we want 
+                to use. All modules will be imported -->
+            <dependency>
+                <groupId>com.ericsson.oss.itpf.sdk</groupId>
+                <artifactId>ServiceFrameworkJBossBOM</artifactId>
+                <version>${version.service.framework.bom}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+
+            <dependency>
+                <groupId>org.jboss.arquillian</groupId>
+                <artifactId>arquillian-bom</artifactId>
+                <version>${version.arquillian.bom}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.ericsson.oss.services.wfs</groupId>
+                <artifactId>wfs-bom</artifactId>
+                <version>${workflow.service.bom}</version>
+                <type>pom</type>
+                <scope>import</scope>
+            </dependency>
+            <dependency>
+                <groupId>com.ericsson.oss.services.vnflcm</groupId>
+                <artifactId>lcmworkflowservice-api</artifactId>
+                <version>${version.vnflcmwfs.service}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.jboss.as.plugins</groupId>
+                <artifactId>jboss-as-maven-plugin</artifactId>
+                <version>${version.jboss-as-maven-plugin}</version>
+            </dependency>
+            <!-- Camunda 3PP Dependencies -->
+            <dependency>
+                <groupId>org.camunda.spin</groupId>
+                <artifactId>camunda-spin-core</artifactId>
+                <version>${version.camunda.spin.bom}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.camunda.spin</groupId>
+                <artifactId>camunda-spin-dataformat-json-jackson</artifactId>
+                <version>${version.camunda.spin.bom}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.camunda.bpm</groupId>
+                <artifactId>camunda-engine-plugin-spin</artifactId>
+                <version>${version.camunda.bom}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>commons-codec</groupId>
+                <artifactId>commons-codec</artifactId>
+                <version>${version.commons.codec}</version>
+                <scope>provided</scope>
+            </dependency>
+        </dependencies>
+    </dependencyManagement>
+    <dependencies>
+        <dependency>
+            <groupId>javax.enterprise</groupId>
+            <artifactId>cdi-api</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>org.jboss.spec.javax.servlet</groupId>
+            <artifactId>jboss-servlet-api_3.0_spec</artifactId>
+            <version>1.0.2.Final-redhat-2</version>
+            <scope>provided</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>parent</artifactId>
+            <version>0.5.0.redhat-00001</version>
+            <type>pom</type>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_common</artifactId>
+            <version>0.5.0.redhat-00001</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient</artifactId>
+            <version>0.5.0.redhat-00001</version>
+        </dependency>
+        <dependency>
+            <groupId>io.prometheus</groupId>
+            <artifactId>simpleclient_hotspot</artifactId>
+            <version>0.3.0</version>
+        </dependency>
+        <dependency>
+            <groupId>javax.inject</groupId>
+            <artifactId>javax.inject</artifactId>
+            <scope>provided</scope>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- Dependency for mocking in Unit tests -->
+        <dependency>
+            <groupId>org.easymock</groupId>
+            <artifactId>easymock</artifactId>
+            <version>${version.easymock}</version>
+            <scope>test</scope>
+        </dependency>
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.tinyjee.dim</groupId>
+                <artifactId>doxia-include-macro</artifactId>
+                <version>1.1</version>
+                <executions>
+                    <execution>
+                        <id>initialize-doxia-include-macro</id>
+                        <!-- Use "initialize" when the 'site' was not given 
+                            as 'phase'. phase>initialize</phase -->
+                        <phase>pre-site</phase>
+                        <goals>
+                            <goal>initialize</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+        </plugins>
+        <pluginManagement>
+            <plugins>
+                <!--This plugin's configuration is used to store Eclipse 
+                    m2e settings only. It has no influence on the Maven build itself. -->
+                <plugin>
+                    <groupId>org.eclipse.m2e</groupId>
+                    <artifactId>lifecycle-mapping</artifactId>
+                    <version>1.0.0</version>
+                    <configuration>
+                        <lifecycleMappingMetadata>
+                            <pluginExecutions>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-dependency-plugin</artifactId>
+                                        <versionRange>[2.4,)</versionRange>
+                                        <goals>
+                                            <goal>analyze-dep-mgt</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-ear-plugin</artifactId>
+                                        <versionRange>[2.7,)</versionRange>
+                                        <goals>
+                                            <goal>generate-application-xml</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.ericsson.maven.plugins</groupId>
+                                        <artifactId>rstate-maven-plugin</artifactId>
+                                        <versionRange>[1.0,)</versionRange>
+                                        <goals>
+                                            <goal>rstate</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.apache.maven.plugins</groupId>
+                                        <artifactId>maven-enforcer-plugin</artifactId>
+                                        <versionRange>[1.1,)</versionRange>
+                                        <goals>
+                                            <goal>enforce</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>org.codehaus.mojo</groupId>
+                                        <artifactId>build-helper-maven-plugin</artifactId>
+                                        <versionRange>[1.7,)</versionRange>
+                                        <goals>
+                                            <goal>regex-property</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                                <pluginExecution>
+                                    <pluginExecutionFilter>
+                                        <groupId>com.ericsson.maven.plugins</groupId>
+                                        <artifactId>cifwk-maven-plugin</artifactId>
+                                        <versionRange>1.0.32</versionRange>
+                                        <goals>
+                                            <goal>preBuildProjectCheck</goal>
+                                        </goals>
+                                    </pluginExecutionFilter>
+                                    <action>
+                                        <ignore />
+                                    </action>
+                                </pluginExecution>
+                            </pluginExecutions>
+                        </lifecycleMappingMetadata>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <artifactId>maven-site-plugin</artifactId>
+                    <configuration>
+                        <relativizeDecorationLinks>true</relativizeDecorationLinks>
+                    </configuration>
+                    <dependencies>
+                        <!-- additional dependencies required by "source-class" 
+                            implementations are added here -->
+                        <dependency>
+                            <groupId>org.tinyjee.dim</groupId>
+                            <artifactId>doxia-include-macro</artifactId>
+                            <version>1.1</version>
+                        </dependency>
+                    </dependencies>
+                    <executions>
+                        <execution>
+                            <id>site</id>
+                            <phase>site</phase>
+                            <goals>
+                                <goal>site</goal>
+                                <goal>attach-descriptor</goal>
+                                <goal>deploy</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+            </plugins>
+        </pluginManagement>
+    </build>
+
+    <modules>
+        <module>vnflcm-ve-vnfm-nbi-jaxrs</module>
+        <module>vnflcm-ve-vnfm-nbi-rest-war</module>
+        <module>vnflcm-ve-vnfm-nbi-jar</module>
+        <module>ERICvnflcmvevnfmemnbi</module>
+    </modules>
+
+    <!--Deployment of versioned documentation -->
+    <distributionManagement>
+        <site>
+            <id>site</id>
+            <name>Site</name>
+            <url>${site.url}/vnflcm-ve-vnfm-nbi/${project.version}</url>
+        </site>
+    </distributionManagement>
+    <!--Profiles for site documentation -->
+
+    <!--Profile to deploy latest site -->
+    <profiles>
+        <profile>
+            <id>site_latest</id>
+            <distributionManagement>
+                <site>
+                    <id>site</id>
+                    <name>Site</name>
+                    <url>${site.url}/vnflcm-ve-vnfm-nbi/latest</url>
+                </site>
+            </distributionManagement>
+        </profile>
+
+        <!--Profile to stage site for review -->
+
+        <profile>
+            <id>site_review</id>
+            <distributionManagement>
+                <site>
+                    <id>site</id>
+                    <name>Site</name>
+                    <url>${site.url}</url>
+                </site>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>site_release</id>
+            <properties>
+                <depsite.url>dav:${project.documentation.url}/${project.version}</depsite.url>
+            </properties>
+        </profile>
+        <profile>
+            <id>site_stage</id>
+            <distributionManagement>
+                <site>
+                    <id>site</id>
+                    <name>Site</name>
+                    <url>${site.url}/vnflcm-ve-vnfm-nbi/snapshot</url>
+                </site>
+            </distributionManagement>
+        </profile>
+        <profile>
+            <id>disable-java8-doclint</id>
+            <activation>
+                <jdk>[1.8,)</jdk>
+            </activation>
+            <properties>
+                <additionalparam>-Xdoclint:none</additionalparam>
+            </properties>
+        </profile>
+    </profiles>
+    <scm>
+        <developerConnection>${ericsson.scm.url}</developerConnection>
+        <connection>${ericsson.scm.url}</connection>
+        <tag>vnflcm-ve-vnfm-nbi-1.8.2</tag>
+    </scm>
+
+</project>
